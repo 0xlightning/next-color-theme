@@ -9,7 +9,6 @@ const config: Config = {
     './pages/**/*.{ts,tsx}',
     './lib/**/*.{ts,tsx}',
     './public/**/*.html',
-    './src/theme/**/*.css',
   ],
   theme: {
     extend: {

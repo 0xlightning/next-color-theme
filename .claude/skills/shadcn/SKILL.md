@@ -5,6 +5,16 @@ user-invocable: false
 allowed-tools: Bash(npx shadcn@latest *), Bash(pnpm dlx shadcn@latest *), Bash(bunx --bun shadcn@latest *)
 ---
 
+<!--
+NOTE (this project): Relative links to `./rules/styling.md`, `./rules/forms.md`,
+`./rules/composition.md`, `./rules/icons.md`, `./rules/base-vs-radix.md`,
+`./cli.md`, and `./customization.md` point at sibling files that are NOT
+present in `.claude/skills/shadcn/` here. The CLI commands and the rules
+text inline above are usable as-is. To get the full rule subdocuments, fetch
+them from the upstream shadcn skill via its source (or run
+`npx shadcn@latest docs <component>` per the Workflow section).
+-->
+
 # shadcn/ui
 
 A framework for building ui, components and design systems. Components are added as source code to the user's project via the CLI.

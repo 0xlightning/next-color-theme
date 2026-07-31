@@ -45,3 +45,20 @@ yarn-error.log*
 .vscode/
 .idea/
 .idea/*.sublime-workspace
+
+# Graphify personal artifacts (cache + cost are per-user; rebuild from graph.json)
+graphify-out/cache/
+graphify-out/cost.json
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/.graphify_labels.json
+# Graphify regenerable intermediates (rebuild from graph.json via `python -m graphify update .`)
+graphify-out/.graphify_analysis.json
+graphify-out/.graphify_ast.json
+graphify-out/.graphify_cached.json
+graphify-out/.graphify_chunk_00.json
+graphify-out/.graphify_detect.json
+graphify-out/.graphify_extract.json
+graphify-out/.graphify_labels.json.sig
+graphify-out/.graphify_labels_dict.json
+graphify-out/.graphify_uncached.txt

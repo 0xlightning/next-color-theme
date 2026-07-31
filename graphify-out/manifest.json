@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-07-30",
+  "nodes": 800,
+  "edges": 1692,
+  "hyperedges": 0,
+  "communities": 53,
+  "corpus_excludes": [
+    "website/shadcn-extraction/"
+  ],
+  "refresh": {
+    "fast": "python -m graphify update .",
+    "recluster": "python -m graphify cluster-only . --min-community-size=2",
+    "full_rebuild": "python -m graphify ."
+  }
+}

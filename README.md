@@ -68,10 +68,71 @@ npm run start
 
 ## 📚 Documentation & Specifications
 
-- **[architecture.md](architecture.md)** – Comprehensive repository file map, component breakdown, and newly added file inventory.
-- **[prd.md](prd.md)** – Product Requirements Document detailing scope, widget spec, and build verification status.
+- **[CLAUDE.md](CLAUDE.md)** – Authoritative project rules, verification gate, and conventions for AI agents working in this repo.
+- **[graphify-out/GRAPH_REPORT.md](graphify-out/GRAPH_REPORT.md)** – Knowledge graph report: communities, god nodes, cross-file dependencies for the 60+ UI primitives, 7 chart wrappers, and 20 widgets.
+- **[graphify-out/graph.html](graphify-out/graph.html)** – Interactive browser visualization of the codebase knowledge graph.
 - **[Shadcn-Extraction/](Shadcn-Extraction/)** – Technical design notes and component extraction logs.
 - **[website/README.md](website/README.md)** – Workspace-specific setup guide and folder overview.
+
+---
+
+## 🕸️ Knowledge Graph / graphify
+
+This repo has a persistent knowledge graph at `graphify-out/`. When you
+ask "what depends on X?", "where is Y defined?", or "trace the path
+between A and B", prefer the graph over grep — it already knows.
+
+- **`graphify-out/GRAPH_REPORT.md`** — human-readable summary: 53 named
+  communities, god nodes, surprising cross-file connections.
+- **`graphify-out/graph.html`** — interactive browser visualization
+  (open in any browser, no server).
+- **`graphify-out/graph.json`** + **`manifest.json`** — queryable data
+  backing the report.
+
+The graph encodes structural AST edges + semantic doc edges across the
+**60+ shadcn primitives** (`website/src/components/ui/`), **7 chart
+wrappers** (`website/src/components/charts/`), and **20 widgets**
+(`website/src/components/widgets/`) — including semantic edges
+extracted from `CLAUDE.md`, `README.md`, and every `SKILL.md`.
+
+### Quick commands
+
+```bash
+# Ask the graph a question (preferred over grep for cross-file queries)
+python -m graphify query "what depends on RevenueChart?"
+
+# Refresh after editing code only (no LLM, fast)
+python -m graphify update .
+
+# Refresh after editing markdown (semantic edges re-extract)
+python -m graphify update . && python -m graphify cluster-only . --min-community-size=2
+
+# Annual full rebuild
+python -m graphify .
+```
+
+Re-run `python -m graphify update .` after major file changes to keep
+the graph fresh. The full refresh-command table is below.
+
+## 🔄 Knowledge Graph — Refresh Commands
+
+The `graphify-out/` knowledge graph is shared across the repo. Files
+marked as **shared** are committed; files marked as **personal** are
+gitignored and per-user (rebuilt from the shared graph).
+
+| When to refresh | Command (run from repo root) |
+|---|---|
+| You added/renamed/deleted **code files** (widgets, UI primitives, hooks, layouts) | `python -m graphify update .` — fast, no LLM |
+| Restructured components/primitives (renames, refactors that change graph topology) | `python -m graphify update . --force` — same as above but allows graph shrink |
+| You edited **markdown** (CLAUDE.md, README.md, SKILL.md) — semantic edges need re-extracting | `python -m graphify update .` then `python -m graphify cluster-only . --min-community-size=2` |
+| Communities drifted or look wrong (needs `GEMINI_API_KEY` set) | `python -m graphify label . --missing-only` |
+| Annual full rebuild / new contributor onboard | `python -m graphify .` (full re-extraction + clustering + LLM labeling) |
+
+Heuristic: rebuild the graph whenever you change something an agent
+would need to know about to navigate the codebase — usually 1–2× per
+week of active development, not every commit. The `--update` flag is a
+positional subcommand in modern graphify
+(`python -m graphify update <path>`), not a flag on the root command.
 
 ---
 *Maintained with Antigravity AI assistant*

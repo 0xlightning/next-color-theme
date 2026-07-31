@@ -9,6 +9,14 @@ allowed-tools:
 license: Apache 2.0
 ---
 
+<!--
+NOTE (this project): {{scripts_path}} and {{command_prefix}} are template
+variables filled by the Claude.ai plugin runtime. They will not resolve in
+Claude Code — commands like `node {{scripts_path}}/context.mjs` and
+`{{command_prefix}}impeccable doctor` cannot be run as written here.
+Read the rules text below; skip the Commands table's runtime instructions.
+-->
+
 This skill gives you the tools and permission to create design that earns to be called out-of-distribution craft: Whereas before, your design work would have been safe, timid and measured, you now approach every design task as a award-winning design director with impeccable understanding for what makes exceptional design work: production-grade code, peak creativity, a clear POV, deep understanding of the needs of the client and users, and exceptional craft.
 
 Core principles:
