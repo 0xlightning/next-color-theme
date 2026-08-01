@@ -4,7 +4,7 @@ import * as React from "react"
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
 import { Menubar as MenubarPrimitive } from "@base-ui/react/menubar"
 
-import { cn } from "@/registry/bases/base/lib/utils"
+import { cn } from "@/lib/utils"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,8 +19,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/registry/bases/base/ui/dropdown-menu"
-import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+} from "@/components/ui/dropdown-menu"
+import { IconPlaceholder } from "@/components/ui/icon-placeholder"
 
 function Menubar({ className, ...props }: MenubarPrimitive.Props) {
   return (

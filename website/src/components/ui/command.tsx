@@ -3,19 +3,19 @@
 import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
 
-import { cn } from "@/registry/bases/base/lib/utils"
+import { cn } from "@/lib/utils"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/registry/bases/base/ui/dialog"
+} from "@/components/ui/dialog"
 import {
   InputGroup,
   InputGroupAddon,
-} from "@/registry/bases/base/ui/input-group"
-import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+} from "@/components/ui/input-group"
+import { IconPlaceholder } from "@/components/ui/icon-placeholder"
 
 function Command({
   className,

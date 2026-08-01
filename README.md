@@ -135,4 +135,3 @@ positional subcommand in modern graphify
 (`python -m graphify update <path>`), not a flag on the root command.
 
 ---
-*Maintained with Antigravity AI assistant*

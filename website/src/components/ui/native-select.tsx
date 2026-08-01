@@ -1,7 +1,7 @@
 import * as React from "react"
 
-import { cn } from "@/registry/bases/base/lib/utils"
-import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+import { cn } from "@/lib/utils"
+import { IconPlaceholder } from "@/components/ui/icon-placeholder"
 
 type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
   size?: "sm" | "default"

@@ -34,7 +34,6 @@ export * from './kbd';
 export * from './label';
 export * from './marker';
 export * from './menubar';
-export * from './message-scroller';
 export * from './message';
 export * from './native-select';
 export * from './navigation-menu';

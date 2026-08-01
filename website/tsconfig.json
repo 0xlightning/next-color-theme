@@ -19,21 +19,20 @@
       }
     ],
     "paths": {
-      "@/registry/bases/base/ui/*": ["./src/components/ui/*"],
-      "@/registry/bases/base/lib/*": ["./lib/*"],
-      "@/registry/bases/base/hooks/*": ["./src/hooks/*"],
-      "@/app/(create)/components/*": ["./app/(create)/components/*"],
-      "@shadcn/react/*": ["./shadcn-extraction/ui/packages/react/src/*"],
       "@/*": ["./src/*", "./*"]
     }
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "./app/**/*.ts",
+    "./app/**/*.tsx",
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "./lib/**/*.ts",
+    "./components/**/*.ts",
+    "./components/**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "shadcn-extraction", ".next"]
+  "exclude": ["node_modules", ".next", "../shadcn-extraction", "../shadcn-extraction/**"]
 }

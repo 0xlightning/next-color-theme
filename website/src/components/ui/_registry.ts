@@ -1044,18 +1044,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     ],
   },
   {
-    name: "message-scroller",
-    type: "registry:ui",
-    dependencies: ["@shadcn/react"],
-    registryDependencies: ["button"],
-    files: [
-      {
-        path: "ui/message-scroller.tsx",
-        type: "registry:ui",
-      },
-    ],
-  },
-  {
     name: "marker",
     type: "registry:ui",
     files: [
