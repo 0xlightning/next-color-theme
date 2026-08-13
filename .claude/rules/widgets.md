@@ -4,17 +4,17 @@ paths: website/src/components/widgets/**
 
 # Widget Conventions
 
-Applies to every folder under `website/src/components/widgets/`. The dashboard has 21 widget folders plus one PascalCase exception. Follow these rules unless the task explicitly says otherwise.
+Applies to every folder under `website/src/components/widgets/`. The dashboard has **20 widget folders** — 19 kebab-case + one PascalCase exception (`RevenueChart/`). Follow these rules unless the task explicitly says otherwise.
 
 ## Folder & file naming
 
 - **Folder name: kebab-case.** Use `payment-cards/`, not `PaymentCards/`. The PascalCase `RevenueChart/` is a tracked anomaly; do not add new widgets in PascalCase, and do not start the kebab-case-to-PascalCase migration in passing.
-- **Component file: same kebab-case name as the folder.** `payment-cards/payment-cards.tsx` exporting `PaymentCards`. PascalCase export, kebab-case file — that is the convention.
+- **Component file: PascalCase `.tsx` matching the folder's idea, NOT the kebab-case text.** Example: `payment-cards/PaymentCards.tsx` exporting `PaymentCards`. The barrel `index.ts` re-exports from `./PaymentCards` (or `./PaymentCards/PaymentCards` if a folder-of-same-name convention exists). Establish the convention as: kebab-case folder, PascalCase file, PascalCase export.
 - **Three files per widget** (when content warrants it):
   - `<name>.tsx` — the component
   - `mockData.ts` — typed fixtures (default export or named constants)
   - `index.ts` — barrel re-export
-- Some widgets carry only `<name>.tsx` + `index.ts` (pre-stubs). That's fine; add `mockData.ts` when the widget reads real data.
+- Some widgets carry only `<name>.tsx` (no `index.ts`, no `mockData.ts`) — these are pre-stubs. Add the missing files when extending.
 
 ## Prop contract — the `data` prop is optional
 
@@ -28,7 +28,7 @@ export default function Foo({ data = defaultData }: { data?: FooData }) {
 
 - `data` is **optional and defaults to** the widget's mock. It is never required.
 - Do not strip the default. Do not make `data` required.
-- Five widgets in the current tree don't take a `data` prop at all (they read `mockData` directly via `useState` or destructuring — `buy-investment`, `calendar`, `claimable-balance`, `payment-cards`, `payment-threshold`, `savings-target`, `stock-performance`, `investment-portfolio`). When extending these, prefer adding the `data = defaultData` prop so the parent can supply real data later.
+- **Widget folders WITHOUT a `data` prop** (they read `mockData` directly via `useState` or destructuring): `buy-investment`, `calendar`, `claimable-balance`, `contribution-history`, `dividend-income`, `investment-portfolio`, `payment-cards`, `payment-threshold`, `savings-target`, `stock-performance`, `RevenueChart`. (Note: `RevenueChart` is the PascalCase exception — uses `React.FC` prop-less pattern.) When extending these, prefer adding the `data = defaultData` prop so the parent can supply real data later.
 
 ## Mock-first — no `fetch()` into widgets
 

@@ -18,8 +18,11 @@ paths:
 
 - Colors come from `app/globals.css` oklch tokens. The matching entries
   in the `@theme inline { … }` block of the same file expose them as
-  Tailwind utilities. There is no `tailwind.config.ts` — do not create
-  one. Don't add new colors as hex anywhere in `src/components/ui/`.
+  Tailwind utilities. There is no `tailwind.config.ts` in `components.json`
+  (`tailwind.config = ""`) — **but a legacy `website/tailwind.config.ts`
+  exists** from create-next-app. It is v3-style and inert under v4
+  (v4 uses `@theme inline`), but it is committed. Don't add new entries
+  to it. Don't add new colors as hex anywhere in `src/components/ui/`.
 - The `base-luma` style + `mist` baseColor in `components.json` defines
   the visual baseline. Don't change those without an explicit pass.
 - For deeper Tailwind v4 + shadcn rules (the `@theme inline` token
@@ -28,9 +31,11 @@ paths:
 
 ## Vendored upstream
 
-- `website/shadcn-extraction/` is the source of truth for upstream
-  patterns but is not the same tree as `src/components/ui/`. Patterns
-  and API shapes may drift; check both before assuming parity.
+- `shadcn-extraction/` (at the **repo root**, NOT under `website/`) is
+  the source of truth for upstream patterns but is not the same tree as
+  `src/components/ui/`. Patterns and API shapes may drift; check both
+  before assuming parity. `tsconfig.json` excludes it via
+  `../shadcn-extraction`; do not import from it in app code.
 
 ## Sibling rules
 

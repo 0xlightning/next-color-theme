@@ -19,7 +19,20 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*", "./*"]
+      "@/*": ["./src/*", "./*"],
+      "lucide-react": ["./src/lib/lucide-react"],
+      "@hugeicons/core-free-icons": ["./src/lib/stub-empty"],
+      "@hugeicons/react": ["./src/lib/stub-empty"],
+      "@streamdown/code": ["./src/lib/stub-empty"],
+      "@tanstack/react-table": ["./src/lib/stub-empty"],
+      "@vercel/analytics/react": ["./src/lib/stub-empty"],
+      "fumadocs-core/breadcrumb": ["./src/lib/stub-empty"],
+      "fumadocs-core/page-tree": ["./src/lib/stub-empty"],
+      "fumadocs-core/search/client": ["./src/lib/stub-empty"],
+      "motion/react": ["./src/lib/stub-empty"],
+      "radix-ui": ["./src/lib/stub-empty"],
+      "react-aria-components": ["./src/lib/stub-empty"],
+      "streamdown": ["./src/lib/stub-empty"]
     }
   },
   "include": [

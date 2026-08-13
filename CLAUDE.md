@@ -23,7 +23,7 @@ Build output you should see in the success case: `Route (app)` table with
 `/settings`.
 
 There is no `test` script. Don't add one. The only test files in this repo
-live inside the vendored `website/shadcn-extraction/` tree and belong to
+live inside the vendored `shadcn-extraction/` tree (at the repo root) and belong to
 its own internal git history; ignore them.
 
 ## Commands
@@ -88,21 +88,21 @@ No `format`, no `typecheck` script — `tsc --noEmit` is the typecheck path.
   `components.json` manifest (`baseColor: mist`, `style: base-luma`,
   `iconLibrary: tabler`) is the source of truth.
 - **`app/globals.css` imports `shadcn/tailwind.css`** which resolves through
-  the `@shadcn/react/*` tsconfig path alias into the vendored
-  `website/shadcn-extraction/` tree. Don't edit that alias or remove the
-  import without checking the rendered output.
-- **Two orphan CSS files** at `src/theme/globals.css` and
-  `src/theme/theme.css` — no module imports them, but Tailwind's
-  `content` paths still scan them. They reference a missing
-  `./legacy-themes.css`. Tracked for removal; do not import from
-  `src/theme/*` and don't add new tokens there. New tokens go in
-  `app/globals.css`.
+  `node_modules/shadcn/` (the shadcn CLI's npm package). It is NOT a
+  tsconfig path alias — `@shadcn/react/*` does not exist in `tsconfig.json`.
+  Don't remove the import without checking the rendered output.
+- **`src/theme/` is empty.** Both files previously there (`src/theme/globals.css`
+  and `src/theme/theme.css`) were removed in commit `c9e9a01`. Don't
+  recreate them or add new tokens there — new tokens go in `app/globals.css`.
 - **`website/src/components/components/` and `website/components/`** are
-  legacy aliasing. Don't add new files to either; use
-  `src/components/{charts,layout,ui,widgets}/`.
-- **`website/shadcn-extraction/`** is a vendored copy of the public
-  shadcn/ui repo with its own internal `.git`. Read-only for pattern
-  reference. tsconfig already excludes it; do not commit into it.
+  gone (removed in commit `c9e9a01`). Don't recreate them; use
+  `src/components/{charts,layout,ui,widgets}/`. `tsconfig.json` and
+  `tailwind.config.ts` still have stale `components/**` include/content
+  globs — harmless but could be cleaned up.
+- **`shadcn-extraction/`** is a vendored copy of the public shadcn/ui
+  repo with its own internal `.git`. It lives at the **repo root** (NOT
+  under `website/`). Read-only for pattern reference. tsconfig already
+  excludes it via `../shadcn-extraction`; do not commit into it.
 - **Data is mock-first.** Widgets consume typed fixtures in
   `mockData.ts`. Do not introduce `fetch()` calls or backend integration
   into existing widgets without explicit owner approval.

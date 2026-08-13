@@ -22,14 +22,24 @@ Applies to every file under `website/src/components/charts/`. There are 7 wrappe
 
 ### AreaChart / BarChart / DonutChart / LineChart (pass-throughs)
 
-All 4 share the same minimal surface:
+All 4 share the same minimal surface and forward to the internal `Chart` component in `src/components/ui/chart.tsx`:
 
 ```tsx
-function AreaChart({ data: unknown }) { /* forwards to internal <Chart type="…"> */ }
+export function Chart({
+  type = "bar",       // defaults to "bar" if omitted
+  data,
+  className,
+}: {
+  type?: "bar" | "line" | "area" | "donut";
+  data: any[];        // currently `any[]` — treat as untyped and validate at the call site
+  className?: string;
+}) { /* dispatches to Recharts BarChart / AreaChart / LineChart / PieChart */ }
 ```
 
-- Only `data` is exposed. Anything else (Recharts props, gradient stops, custom tooltip) is forwarded via the internal `Chart` wrapper — not through these wrappers.
-- If you need a custom Recharts prop, edit the internal `Chart` component or use a wrapper that does take more props. Don't bypass these wrappers by importing Recharts directly into a widget.
+- Only `type`, `data`, and `className` are exposed on these wrappers.
+- If you need a custom Recharts prop (gradient stops, custom tooltip, axes), edit the internal `Chart` component in `src/components/ui/chart.tsx` directly, or use one of the lower-level wrappers (`MiniBarChart`, `Sparkline`, `ProgressRing`) that accepts more props.
+- Don't bypass these wrappers by importing Recharts directly into a widget — wrappers already encapsulate Recharts usage.
+- Type-narrowing note: `data: any[]` is a known anti-pattern at the inner wrapper. When introducing new widgets, validate the data shape at the call site (typed `FooData[]` flowing into the wrapper).
 
 ### MiniBarChart
 
@@ -73,8 +83,9 @@ type ProgressRingProps = {
 ```
 
 - The only chart wrapper that accepts `className` (applied to the outer wrapper div).
-- Track stroke `stroke-muted/30`, progress stroke `stroke-primary`, rounded linecap, 300ms ease-in-out transition, label "X%" inside the ring.
+- Track stroke `stroke-muted/30`, progress stroke `stroke-primary`, rounded linecap, 300ms ease-in-out transition, label `Math.round(value)%` inside the ring.
 - Animates via `stroke-dashoffset` transition, not Recharts.
+- `ProgressRing` is the only chart wrapper that does NOT accept a `color` prop — palette is hardcoded. To recolor, edit the file directly.
 
 ## Mapping widget patterns to wrappers
 
@@ -86,7 +97,7 @@ type ProgressRingProps = {
 | Time-series bars (monthly contributions) | `BarChart` |
 | Row-internal mini bar (one bar per dividend row) | `MiniBarChart` |
 | Row-internal sparkline (one sparkline per stock row) | `Sparkline` |
-| Full dashboard chart with custom series | generic `Chart` from `@/components/ui/chart` (only `RevenueChart` uses this) |
+| Full dashboard chart with custom series | generic `Chart` from `@/components/ui/chart` (only `RevenueChart` uses this — but the 4 pass-through wrappers route to it too) |
 
 ## Palette convention
 
@@ -105,8 +116,8 @@ type ProgressRingProps = {
 ## Adding a new wrapper
 
 1. Confirm the pattern is used ≥3 times across widgets.
-2. Match the file naming: kebab-case folder + PascalCase export? No — these are flat files (`MiniBarChart.tsx`). Follow the existing convention.
-3. Add a typed prop interface with explicit types (no `any`).
-4. Use `cn()` from `@/lib/utils` for any class composition.
-5. Re-export from `src/components/charts/index.ts` if a barrel exists; otherwise import directly.
+2. Files live directly in `src/components/charts/` as flat files (e.g. `MiniBarChart.tsx`), NOT in per-component subfolders.
+3. Add a typed prop interface with explicit types — avoid `any` (the existing `Chart` wrapper in `ui/chart.tsx` uses `any[]`; that is the one allowed exception, do not propagate it).
+4. Use `cn()` from `@/lib/utils` for any class composition (ProgressRing currently uses string concatenation — when editing, switch to `cn()`).
+5. No barrel file exists at `src/components/charts/index.ts`; import directly from the file path.
 6. Document the new wrapper in this file.
