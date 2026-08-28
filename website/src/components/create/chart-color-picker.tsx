@@ -11,6 +11,7 @@ export function ChartColorPicker() {
   return (
     <SettingCard
       label="Chart Color"
+      field="chartColor"
       value={state.chartColor}
       valueLabel={current?.label ?? "—"}
       indicator={<SwatchDot color={current?.swatch ?? "#9ca3af"} />}

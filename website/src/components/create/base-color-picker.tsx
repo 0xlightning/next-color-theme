@@ -11,6 +11,7 @@ export function BaseColorPicker() {
   return (
     <SettingCard
       label="Base Color"
+      field="baseColor"
       value={state.baseColor}
       valueLabel={current?.label ?? "—"}
       indicator={<SwatchDot color={current?.swatch ?? "#9ca3af"} />}

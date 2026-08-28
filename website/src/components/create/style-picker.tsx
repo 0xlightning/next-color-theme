@@ -11,6 +11,7 @@ export function StylePicker() {
   return (
     <SettingCard
       label="Style"
+      field="style"
       value={state.style}
       valueLabel={current?.label ?? "—"}
       indicator={<CircleOutline />}

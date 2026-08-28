@@ -11,6 +11,7 @@ export function ThemePicker() {
   return (
     <SettingCard
       label="Theme"
+      field="theme"
       value={state.theme}
       valueLabel={current?.label ?? "—"}
       indicator={<SwatchDot color={current?.swatch ?? "#9ca3af"} />}

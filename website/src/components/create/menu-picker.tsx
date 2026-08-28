@@ -12,6 +12,7 @@ export function MenuColorPicker() {
   return (
     <SettingCard
       label="Menu"
+      field="menuColor"
       value={state.menuColor}
       valueLabel={current?.label ?? "—"}
       indicator={

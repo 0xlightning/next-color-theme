@@ -1,6 +1,6 @@
 import React from 'react';
-import { Chart } from '@/components/ui/chart';
+import { Chart, type ChartDatum } from '@/components/ui/chart';
 
-export const BarChart = ({ data }: { data: unknown }) => (
-  <Chart type="bar" data={data as any} />
+export const BarChart = ({ data }: { data: ChartDatum[] }) => (
+  <Chart type="bar" data={data} />
 );

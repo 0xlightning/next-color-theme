@@ -222,7 +222,11 @@ function CalendarDayButton({
     <Button
       variant="ghost"
       size="icon"
-      data-day={day.date.toLocaleDateString(locale?.code)}
+      // Pin the locale. With no argument the runtime default is used, and
+      // Node and the browser disagree on day/month padding ("26/7/2026" vs
+      // "26/07/2026"), which React reports as a hydration mismatch on every
+      // day cell. Divergence from upstream shadcn: re-apply after a CLI update.
+      data-day={day.date.toLocaleDateString(locale?.code ?? "en-GB")}
       data-selected-single={
         modifiers.selected &&
         !modifiers.range_start &&

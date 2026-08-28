@@ -1,6 +1,6 @@
 import React from 'react';
-import { Chart } from '@/components/ui/chart';
+import { Chart, type ChartDatum } from '@/components/ui/chart';
 
-export const DonutChart = ({ data }: { data: unknown }) => (
-  <Chart type="donut" data={data as any} />
+export const DonutChart = ({ data }: { data: ChartDatum[] }) => (
+  <Chart type="donut" data={data} />
 );

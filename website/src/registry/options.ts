@@ -1,6 +1,7 @@
 import type {
   FontOption,
   IconLibraryOption,
+  LibraryOption,
   RadiusOption,
   ThemeOption,
   MenuColorOption,
@@ -35,7 +36,7 @@ export const FONTS: FontOption[] = [
   {
     value: "eb-garamond",
     label: "EB Garamond",
-    family: "'EB Garamond', Georgia, 'Times New Roman', serif",
+    family: "var(--font-eb-garamond), Georgia, 'Times New Roman', serif",
     type: "serif",
   },
 ]
@@ -48,6 +49,26 @@ export const FONT_HEADING_OPTIONS: FontOption[] = [
 export const ICON_LIBRARIES: IconLibraryOption[] = [
   { value: "tabler", label: "Tabler Icons" },
   { value: "lucide", label: "Lucide" },
+]
+
+/**
+ * Primitive library the exported code targets. Only `build-payload.ts` reads
+ * this — the live preview is always Base UI. `style` is what lands in the
+ * exported `components.json`.
+ */
+export const LIBRARIES: LibraryOption[] = [
+  {
+    value: "base-ui",
+    label: "Base UI",
+    style: "base-luma",
+    description: "shadcn on @base-ui/react — what this app renders.",
+  },
+  {
+    value: "radix",
+    label: "Radix UI",
+    style: "new-york",
+    description: "Classic shadcn on @radix-ui primitives.",
+  },
 ]
 
 export const RADII: RadiusOption[] = [
@@ -97,6 +118,10 @@ export const DEFAULT_RADIUS_VALUE = "0.45rem"
 
 export function getFont(value: string): FontOption | undefined {
   return FONTS.find((f) => f.value === value)
+}
+
+export function getLibrary(value: string): LibraryOption | undefined {
+  return LIBRARIES.find((l) => l.value === value)
 }
 
 export function getRadius(name: string): RadiusOption | undefined {

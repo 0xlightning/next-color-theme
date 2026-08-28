@@ -1,16 +1,27 @@
 "use client"
 
 import * as React from "react"
+import { toast } from "sonner"
+import {
+  ACCENTS,
+  BASE_COLORS,
+  FONTS,
+  FONT_HEADING_OPTIONS,
+  ICON_LIBRARIES,
+  LIBRARIES,
+  MENU_ACCENTS,
+  MENU_COLORS,
+  RADII,
+  STYLES,
+  THEMES,
+} from "@/registry"
 import {
   type DesignSystemConfig,
   type FontValue,
-  type IconLibraryValue,
-  type MenuAccentValue,
-  type MenuColorValue,
   type Mode,
-  type RadiusName,
-  type ThemeName,
 } from "@/registry/types"
+import { PRESENT_COMPONENTS } from "./registry-catalog"
+import { findSavedDesign } from "./use-saved-designs"
 
 const STORAGE_KEY = "next-color-theme:create-state"
 
@@ -27,12 +38,36 @@ export const DEFAULT_CONFIG: DesignSystemConfig = {
   chartColor: "lime",
   menuColor: "inverted",
   menuAccent: "bold",
+  library: "base-ui",
+}
+
+/** Which config fields Shuffle must leave alone. */
+export type Locks = Partial<Record<keyof DesignSystemConfig, boolean>>
+
+type EditorState = {
+  config: DesignSystemConfig
+  locks: Locks
+  /** shadcn component names picked in the Get Code dialog. */
+  components: string[]
+  /** False until the localStorage read lands. Persisting before that would
+   *  write the placeholder defaults over real saved state. */
+  hydrated: boolean
+}
+
+const DEFAULT_EDITOR_STATE: EditorState = {
+  config: DEFAULT_CONFIG,
+  locks: {},
+  components: [...PRESENT_COMPONENTS],
+  hydrated: false,
 }
 
 type Action =
   | { type: "set"; payload: Partial<DesignSystemConfig> }
   | { type: "replace"; payload: DesignSystemConfig }
-  | { type: "randomize" }
+  | { type: "hydrate"; payload: EditorState }
+  | { type: "toggleLock"; field: keyof DesignSystemConfig }
+  | { type: "setComponents"; payload: string[] }
+  | { type: "randomize"; payload: DesignSystemConfig }
   | { type: "reset" }
 
 function pickRandom<T>(items: readonly T[]): T {
@@ -41,100 +76,96 @@ function pickRandom<T>(items: readonly T[]): T {
   return item ?? items[0]
 }
 
+/**
+ * Pools are read off the registry lists the pickers themselves render, so a
+ * new base color or style is shuffled the moment it is added. (They used to
+ * be hardcoded literals and had already drifted — `fontHeading` was missing
+ * `jetbrains-mono` even though the picker offered it.)
+ */
 function randomConfig(): DesignSystemConfig {
   return {
-    baseColor: pickRandom(["mist", "neutral", "gray", "zinc", "stone", "slate"]),
-    accent: pickRandom(["default", "blue", "green", "orange", "violet", "rose"]),
-    style: pickRandom([
-      "luma",
-      "lyra",
-      "maia",
-      "mira",
-      "nova",
-      "rhea",
-      "sera",
-      "vega",
-    ]),
-    font: pickRandom<FontValue>([
-      "geist",
-      "inter",
-      "noto-sans",
-      "jetbrains-mono",
-      "eb-garamond",
-    ]),
-    fontHeading: pickRandom<FontValue | "inherit">([
-      "inherit",
-      "geist",
-      "inter",
-      "noto-sans",
-      "eb-garamond",
-    ]),
-    iconLibrary: pickRandom<IconLibraryValue>(["tabler", "lucide"]),
+    baseColor: pickRandom(BASE_COLORS).name,
+    accent: pickRandom(ACCENTS).name,
+    style: pickRandom(STYLES).name,
+    font: pickRandom(FONTS).value as FontValue,
+    fontHeading: pickRandom(FONT_HEADING_OPTIONS).value,
+    iconLibrary: pickRandom(ICON_LIBRARIES).value,
     mode: pickRandom<Mode>(["light", "dark"]),
-    radius: pickRandom<RadiusName>([
-      "none",
-      "small",
-      "medium",
-      "large",
-      "round",
-    ]),
-    theme: pickRandom<ThemeName>([
-      "neutral",
-      "blue",
-      "green",
-      "orange",
-      "violet",
-      "rose",
-      "cyan",
-      "lime",
-    ]),
-    chartColor: pickRandom<ThemeName>([
-      "neutral",
-      "blue",
-      "green",
-      "orange",
-      "violet",
-      "rose",
-      "cyan",
-      "lime",
-    ]),
-    menuColor: pickRandom<MenuColorValue>([
-      "default",
-      "default-translucent",
-      "inverted",
-      "inverted-translucent",
-    ]),
-    menuAccent: pickRandom<MenuAccentValue>(["subtle", "bold"]),
+    radius: pickRandom(RADII).name,
+    theme: pickRandom(THEMES).name,
+    chartColor: pickRandom(THEMES).name,
+    menuColor: pickRandom(MENU_COLORS).value,
+    menuAccent: pickRandom(MENU_ACCENTS).value,
+    library: pickRandom(LIBRARIES).value,
   }
 }
 
-function reducer(
-  state: DesignSystemConfig,
-  action: Action
+/** Re-apply every locked field's current value over a fresh random config. */
+function applyLocks(
+  next: DesignSystemConfig,
+  current: DesignSystemConfig,
+  locks: Locks
 ): DesignSystemConfig {
+  const merged = { ...next }
+  for (const key of Object.keys(locks) as (keyof DesignSystemConfig)[]) {
+    if (locks[key]) {
+      // Per-key copy keeps each field at its own type; the config is flat.
+      Object.assign(merged, { [key]: current[key] })
+    }
+  }
+  return merged
+}
+
+function reducer(state: EditorState, action: Action): EditorState {
   switch (action.type) {
     case "set":
-      return { ...state, ...action.payload }
+      return { ...state, config: { ...state.config, ...action.payload } }
     case "replace":
-      return action.payload
+      return { ...state, config: action.payload }
+    case "hydrate":
+      return { ...action.payload, hydrated: true }
+    case "toggleLock":
+      return {
+        ...state,
+        locks: { ...state.locks, [action.field]: !state.locks[action.field] },
+      }
+    case "setComponents":
+      return { ...state, components: action.payload }
     case "randomize":
-      return randomConfig()
+      // The random config is generated by the caller, not here — reducers
+      // must be pure, and React dev-mode double-invokes them.
+      return {
+        ...state,
+        config: applyLocks(action.payload, state.config, state.locks),
+      }
     case "reset":
-      return DEFAULT_CONFIG
+      return { ...state, config: DEFAULT_CONFIG }
   }
 }
 
 type Store = {
   state: DesignSystemConfig
+  locks: Locks
+  components: string[]
   set: (next: Partial<DesignSystemConfig>) => void
   replace: (next: DesignSystemConfig) => void
   randomize: () => void
   reset: () => void
+  toggleLock: (field: keyof DesignSystemConfig) => void
+  setComponents: (next: string[]) => void
 }
 
 const DesignSystemContext = React.createContext<Store | null>(null)
 
-function loadFromStorage(): DesignSystemConfig | null {
+/** Design ids already toasted, so dev double-invocation doesn't double-toast. */
+const announced = new Set<string>()
+
+/**
+ * Reads the `{ config, locks, components }` envelope, falling back to the
+ * older flat `DesignSystemConfig` shape so themes saved before locks existed
+ * still load.
+ */
+function loadFromStorage(): EditorState | null {
   if (typeof window === "undefined") {
     return null
   }
@@ -144,8 +175,23 @@ function loadFromStorage(): DesignSystemConfig | null {
       return null
     }
     const parsed: unknown = JSON.parse(raw)
-    if (parsed && typeof parsed === "object") {
-      return { ...DEFAULT_CONFIG, ...(parsed as Partial<DesignSystemConfig>) }
+    if (!parsed || typeof parsed !== "object") {
+      return null
+    }
+    const record = parsed as Record<string, unknown>
+    const isEnvelope = "config" in record && typeof record.config === "object"
+    const config = (isEnvelope ? record.config : record) as
+      | Partial<DesignSystemConfig>
+      | undefined
+
+    return {
+      config: { ...DEFAULT_CONFIG, ...(config ?? {}) },
+      locks: (isEnvelope && (record.locks as Locks)) || {},
+      components:
+        isEnvelope && Array.isArray(record.components)
+          ? (record.components as string[])
+          : [...PRESENT_COMPONENTS],
+      hydrated: true,
     }
   } catch {
     // ignore corrupt storage
@@ -153,39 +199,86 @@ function loadFromStorage(): DesignSystemConfig | null {
   return null
 }
 
-function persist(state: DesignSystemConfig) {
+function persist(state: EditorState) {
   if (typeof window === "undefined") {
     return
   }
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    const { config, locks, components } = state
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ config, locks, components })
+    )
   } catch {
     // localStorage may be unavailable (private mode); silently skip
   }
 }
 
-export function DesignSystemProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = React.useReducer(reducer, DEFAULT_CONFIG)
+export function DesignSystemProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const [state, dispatch] = React.useReducer(reducer, DEFAULT_EDITOR_STATE)
 
-  // Hydrate from localStorage after mount (avoids SSR mismatch).
+  // One effect owns the whole "what is the initial config" decision, so a
+  // `?design=` hand-off from /creates cannot race the localStorage read.
+  // It is deliberately idempotent — React invokes mount effects twice in
+  // dev, and the second pass must reach the same answer, so the URL is not
+  // cleaned up here (see the effect below).
   React.useEffect(() => {
     const stored = loadFromStorage()
-    if (stored) {
-      dispatch({ type: "replace", payload: stored })
+    const base = stored ?? DEFAULT_EDITOR_STATE
+
+    const id = new URLSearchParams(window.location.search).get("design")
+    const requested = id ? findSavedDesign(id) : undefined
+
+    if (id && !announced.has(id)) {
+      announced.add(id)
+      if (requested) {
+        toast.success(`Loaded “${requested.name}”`)
+      } else {
+        // Deleted in another tab, or a stale link.
+        toast.error("That design is no longer saved")
+      }
     }
+
+    dispatch({
+      type: "hydrate",
+      payload: requested ? { ...base, config: requested.config } : base,
+    })
   }, [])
 
+  // Drop `?design=` only once the config it named is committed, so a reload
+  // doesn't re-apply it over later edits.
   React.useEffect(() => {
+    if (state.hydrated && window.location.search.includes("design=")) {
+      window.history.replaceState({}, "", window.location.pathname)
+    }
+  }, [state.hydrated])
+
+  React.useEffect(() => {
+    // Never write before the first read — the initial render still holds
+    // DEFAULT_EDITOR_STATE and would clobber whatever is stored.
+    if (!state.hydrated) {
+      return
+    }
     persist(state)
   }, [state])
 
   const store = React.useMemo<Store>(
     () => ({
-      state,
+      state: state.config,
+      locks: state.locks,
+      components: state.components,
       set: (next) => dispatch({ type: "set", payload: next }),
       replace: (next) => dispatch({ type: "replace", payload: next }),
-      randomize: () => dispatch({ type: "randomize" }),
+      randomize: () =>
+        dispatch({ type: "randomize", payload: randomConfig() }),
       reset: () => dispatch({ type: "reset" }),
+      toggleLock: (field) => dispatch({ type: "toggleLock", field }),
+      setComponents: (next) =>
+        dispatch({ type: "setComponents", payload: next }),
     }),
     [state]
   )

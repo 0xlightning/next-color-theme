@@ -1,329 +1,264 @@
-# Graph Report - .  (2026-07-30)
+# Graph Report - .  (2026-08-26)
 
 ## Corpus Check
-- 136 files · ~0 words
-- Verdict: corpus is large enough that graph structure adds value.
+- Corpus is ~39,900 words - fits in a single context window. You may not need a graph.
 
 ## Summary
-- 800 nodes · 1692 edges · 53 communities (50 shown, 3 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 7 edges (avg confidence: 0.86)
-- Token cost: 8,820 input · 6,240 output
+- 754 nodes · 1767 edges · 61 communities (32 shown, 29 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 21 edges (avg confidence: 0.85)
+- Token cost: 14,000 input · 2,400 output
 
 ## Community Hubs (Navigation)
-- Card + Charts (Card primitive family + all chart primitives: AreaChart, BarChart, DonutChart, LineChart, MiniBarChart, ProgressRing, Sparkline, plus their props types)
-- React + Login Page (react runtime + /login route + LoginPage component)
-- Sheet + Sidebar (Sheet sliding panel + sidebar navigation components)
-- App Routes + Pages (/, /analytics, /settings pages + AnalyticsPage + SettingsPage + Home)
-- Runtime Dependencies (@base-ui/react, cmdk, embla-carousel-react, input-otp, next, next-themes, etc.)
-- DropdownMenu + Menubar + ContextMenu (all menu-family primitives: DropdownMenu, Menubar, ContextMenu)
-- Combobox Primitive (autocomplete + chips selection: Combobox, ComboboxValue, ComboboxTrigger, etc.)
-- package.json + Build Config (package.json metadata, devDependencies, scripts)
-- cn() + Avatar + Misc (cn() utility + Avatar primitive + several small primitives)
-- CLAUDE.md Knowledge (Authoritative Project Rules + Skills Index + Impeccable Rules + Operate Mode + Brief Wins)
-- Command Primitive (keyboard command palette: Command, CommandDialog, CommandInput, etc.)
-- components.json (shadcn config: $schema, style, base, iconLibrary, aliases, etc.)
-- ContextMenu Primitive (right-click menu — separated from c5 on this run: ContextMenu/Portal/Item/etc.)
-- Drawer Primitive (bottom-sheet drawer: Drawer, DrawerContext, DrawerContextProps)
-- Carousel Primitive (embla-powered carousel: Carousel, CarouselApi, UseCarouselParameters)
-- AlertDialog Primitive (destructive confirmation: AlertDialog, AlertDialogTrigger, etc.)
-- Field Primitive (form-field composition: FieldSet, FieldLegend, Field, FieldGroup, etc.)
-- tsconfig Compiler Options (compilerOptions: target, allowJs, esModuleInterop, jsx, module, etc.)
-- IconPlaceholder (cross-cutting: IconPlaceholder + IconPlaceholderProps + the create-route helper)
-- Item Primitive (list-row layout: ItemGroup, ItemSeparator, Item, ItemHeader, etc.)
-- MessageScroller Primitive (chat scroll container: MessageScrollerProvider, MessageScroller, etc.)
-- Attachment Primitive (file-attach UI: attachmentVariants, Attachment, AttachmentGroup, etc.)
-- tsconfig Paths (paths: @/registry/bases/base/ui/*, ./src/components/ui/*, etc.)
-- NavigationMenu Primitive (top-nav mega-menu: NavigationMenu, NavigationMenuList, etc.)
-- Badge Primitive + CVA reference (Badge, badgeVariants + ref_class_variance_authority)
-- UI Index/Registry (ui/index.ts, _registry.ts, ui/direction.tsx — shadcn registry plumbing)
-- Toggle + ToggleGroup Primitives (ToggleGroupContext, ToggleGroup, Toggle variants)
-- Root Layout + Fonts (layout.tsx + ebGaramondHeading + notoSans + Geist font loading)
-- Pagination Primitive (paged navigation: Pagination, PaginationContent, etc.)
-- Bubble Primitive (chat-bubble UI: BubbleGroup, bubbleVariants, Bubble, etc.)
-- Popover Primitive (floating overlay: Popover, PopoverTrigger, PopoverContent, etc.)
-- Utils + AspectRatio (utils.ts + AspectRatio primitive + Kbd/Slider scattered)
-- Breadcrumb Primitive (path breadcrumb nav: Breadcrumb, BreadcrumbList, etc.)
-- Empty Primitive (no-data/empty-state composition: Empty, EmptyHeader, etc.)
-- Progress Primitive (progress bar: Progress, ProgressTrack)
-- Tabs Primitive (tabbed content: Tabs, tabsListVariants, TabsTrigger, etc.)
-- tsconfig Include (include patterns: next-env.d.ts, **/*.ts, **/*.tsx)
-- tsconfig Exclude + Next Config (exclude + next.config.ts + nextConfig)
-- Accordion Primitive (expand-collapse sections: Accordion, AccordionItem, etc.)
-- InputOTP Primitive (one-time-code entry: InputOTP, InputOTPGroup, etc.)
-- Alert Primitive (callout/inline notice: alertVariants, Alert, AlertTitle, etc.)
-- Collapsible Primitive (simple show/hide: Collapsible, CollapsibleTrigger)
-- HoverCard Primitive (hover-revealed card: HoverCard, HoverCardTrigger)
-- RadioGroup Primitive (mutually-exclusive radio: RadioGroup, RadioGroupItem)
-- ESLint Config (eslint.config.mjs + eslintConfig + ref_eslint_config)
-- Resizable Primitive (resizable panel groups: ResizablePanelGroup, ResizablePanel)
-- ButtonGroup Primitive (buttonGroupVariants, ButtonGroup + Separator)
-- ScrollArea Primitive (custom scrollbar: ScrollArea, ScrollBar)
-- TS Compiler Lib Options (lib: dom, dom.iterable, esnext)
-- Sonner Toaster (Toaster + ref_next_themes — toast container)
-- Slider Primitive (Slider + ref_base_ui_react_slider)
-- Tailwind Config (tailwind.config.ts + ref_tailwindcss)
-- PostCSS Config (postcss.config.mjs + config helper)
+- Card Alignment & Primitives
+- Chart Library Doctrine
+- Preview Grid Layout
+- Stub Module Typedefs
+- Widget Folder Barrels
+- Create Page & Preset Codes
+- cn() Utility & Avatar Field
+- Routing & App Config
+- Progress Ring & Media Widgets
+- Font & Accent Pickers
+- components.json Manifest
+- Theme Scope & Payload Builder
+- Input Group Primitive
+- Radius & Chart Color Pickers
+- Accordion & Tabs
+- Third-party UI Dependencies
+- Build Toolchain
+- Design System State
+- Table Primitive
+- Empty State Primitive
+- Dialog Primitive
+- Verification Gate & Scripts
+- Tooltip & Claimable Balance
+- Lucide Icon Shim
+- Chart Palette Tokens
+- Skeleton & Loading State
+- Progress Primitive
+- shadcn Skill Rules
+- Menu Color Picker
+- Lint Config & Icon Resolver
+- Impeccable Design Skill
+- Ponytail Lazy-coding Skill
+- cmdk Dependency
+- Embla Carousel Dependency
+- Input OTP Dependency
+- react-day-picker Dependency
+- react-dom Dependency
+- Sonner Dependency
+- Tabler Icons Dependency
+- tailwind-merge Dependency
+- Vestigial Tailwind Config
+- tw-animate-css Dependency
+- PostCSS Config
+- Analytics Stub
+- Code Highlight Stub
+- Dialog Stub
+- FlexRender Stub
+- Core Row Model Stub
+- Filtered Row Model Stub
+- Pagination Row Model Stub
+- Sorted Row Model Stub
+- Hugeicons Icon Stub
+- I18n Provider Stub
+- Motion Stub
+- Plus Sign Icon Stub
+- Radix Root Stub
+- Streamdown Stub
+- useBreadcrumb Stub
+- useDocsSearch Stub
+- useReactTable Stub
+- useReducedMotion Stub
 
 ## God Nodes (most connected - your core abstractions)
-1. `cn()` - 337 edges
-2. `utils.ts` - 61 edges
-3. `ui/index.ts` - 61 edges
-4. `ref_react` - 59 edges
-5. `sidebar.tsx` - 56 edges
-6. `app/page.tsx` - 44 edges
-7. `menubar.tsx` - 38 edges
-8. `card.tsx` - 31 edges
-9. `combobox.tsx` - 30 edges
-10. `PaymentThreshold.tsx` - 29 edges
+1. `cn()` - 135 edges
+2. `CardContent()` - 44 edges
+3. `Card()` - 43 edges
+4. `CardHeader()` - 38 edges
+5. `CardTitle()` - 36 edges
+6. `CardDescription()` - 31 edges
+7. `Button()` - 26 edges
+8. `useDesignSystem()` - 24 edges
+9. `CardFooter()` - 20 edges
+10. `IconPlaceholder()` - 20 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `icon-placeholder.tsx` --imports_from--> `ref_react`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → 
-- `icon-placeholder.tsx` --imports_from--> `ref_tabler_icons_react`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → 
-- `icon-placeholder.tsx` --imports_from--> `accordion.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/accordion.tsx
-- `icon-placeholder.tsx` --imports_from--> `breadcrumb.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/breadcrumb.tsx
-- `icon-placeholder.tsx` --imports_from--> `calendar.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/calendar.tsx
-- `icon-placeholder.tsx` --imports_from--> `carousel.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/carousel.tsx
-- `icon-placeholder.tsx` --imports_from--> `combobox.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/combobox.tsx
-- `icon-placeholder.tsx` --imports_from--> `command.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/command.tsx
-- `icon-placeholder.tsx` --imports_from--> `context-menu.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/context-menu.tsx
-- `icon-placeholder.tsx` --imports_from--> `dialog.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/dialog.tsx
-- `icon-placeholder.tsx` --imports_from--> `dropdown-menu.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/dropdown-menu.tsx
-- `icon-placeholder.tsx` --imports_from--> `input-otp.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/input-otp.tsx
-- `icon-placeholder.tsx` --imports_from--> `menubar.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/menubar.tsx
-- `icon-placeholder.tsx` --imports_from--> `message-scroller.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/message-scroller.tsx
-- `icon-placeholder.tsx` --imports_from--> `navigation-menu.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/navigation-menu.tsx
-- `icon-placeholder.tsx` --imports_from--> `pagination.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/pagination.tsx
-- `icon-placeholder.tsx` --imports_from--> `select.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/select.tsx
-- `icon-placeholder.tsx` --imports_from--> `sheet.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/sheet.tsx
-- `icon-placeholder.tsx` --imports_from--> `sidebar.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/sidebar.tsx
-- `icon-placeholder.tsx` --imports_from--> `sonner.tsx`  [EXTRACTED]
-  website/app/(create)/components/icon-placeholder.tsx → website/src/components/ui/sonner.tsx
+- `Icon Placeholder Resolver` --references--> `IconPlaceholder()`  [EXTRACTED]
+  .claude/rules/ui-primitives.md → website/src/components/ui/icon-placeholder.tsx
+- `Verification Gate` --references--> `scripts`  [EXTRACTED]
+  CLAUDE.md → website/package.json
+- `Four Chart Wrappers` --references--> `ProgressRing()`  [EXTRACTED]
+  .claude/rules/charts.md → website/src/components/charts/ProgressRing.tsx
+- `Live Theme Customizer` --references--> `Customizer()`  [EXTRACTED]
+  README.md → website/src/components/create/customizer.tsx
+- `Runtime Token Injection` --references--> `PreviewGrid()`  [EXTRACTED]
+  README.md → website/src/components/create/preview-grid.tsx
 
 ## Import Cycles
 - None detected.
 
-## Communities (53 total, 3 thin omitted)
+## Hyperedges (group relationships)
+- **Chart Wrapper Set** — website_src_components_charts_barchart_barchart, website_src_components_charts_donutchart_donutchart, website_src_components_charts_minibarchart_minibarchart, website_src_components_charts_progressring_progressring, claude_rules_charts_generic_chart [EXTRACTED 1.00]
+- **Design + Discipline Pairing: impeccable (Operate mode craft) + ponytail (YAGNI ladder) jointly govern dashboard surface changes** — claude_skills_impeccable_skill_md_operate_mode, claude_skills_ponytail_skill_md_the_ladder [INFERRED 0.85]
+- **Runtime Theme Injection Flow** — website_src_components_create_use_design_system, website_src_registry_index, website_src_components_create_theme_scope_themescope, website_src_components_create_preview_grid_previewgrid [EXTRACTED 1.00]
+- **Card Alignment Contract** — claude_grid_owns_width, claude_rules_widgets_no_width_on_card_root, claude_rules_widgets_no_padding_on_card_root, claude_rules_widgets_min_width_zero, claude_rules_widgets_column_span_over_wide_card [EXTRACTED 1.00]
 
-### Community 0 - "Card + Charts (Card primitive family + all chart primitives: AreaChart, BarChart, DonutChart, LineChart, MiniBarChart, ProgressRing, Sparkline, plus their props types)"
+## Communities (61 total, 29 thin omitted)
+
+### Community 0 - "Card Alignment & Primitives"
 Cohesion: 0.05
-Nodes (53): ref_base_ui_react_button, ref_base_ui_react_input, ref_base_ui_react_select, ref_base_ui_react_separator, ref_base_ui_react_tooltip, ref_tabler_icons_react, ProgressRing(), ProgressRingProps (+45 more)
+Nodes (63): Grid Owns Width, Card Owns Padding, No Padding on Card Root, Button(), Card(), CardContent(), CardDescription(), CardFooter(), CardHeader() (+55 more)
 
-### Community 1 - "React + Login Page (react runtime + /login route + LoginPage component)"
+### Community 1 - "Chart Library Doctrine"
 Cohesion: 0.06
-Nodes (34): react, ref_next_link, ref_react, ref_react_day_picker, ref_recharts, react, BarChart(), MiniBarChart() (+26 more)
+Nodes (39): Four Chart Wrappers, Generic Chart Dispatcher, No Direct Recharts in Widgets, Right Primitive per Data Shape, recharts, Base UI, Not Radix, No ui Barrel, Primitives Come From the shadcn CLI (+31 more)
 
-### Community 2 - "Sheet + Sidebar (Sheet sliding panel + sidebar navigation components)"
+### Community 2 - "Preview Grid Layout"
+Cohesion: 0.05
+Nodes (43): Calendar Hydration Mismatch, Column Span, Not a Wider Card, min-w-0 Shrink Contract, No Width on Card Root, react, react, PreviewGrid(), buttonVariants (+35 more)
+
+### Community 3 - "Stub Module Typedefs"
 Cohesion: 0.06
-Nodes (37): ref_base_ui_react_dialog, Sheet(), SheetContent(), SheetDescription(), SheetFooter(), SheetHeader(), SheetOverlay(), SheetTitle() (+29 more)
+Nodes (42): dom, dom.iterable, esnext, ./src/lib/lucide-react, ./src/lib/stub-empty, tsconfig Stub Modules, ColumnDef, ColumnFiltersState (+34 more)
 
-### Community 3 - "App Routes + Pages (/, /analytics, /settings pages + AnalyticsPage + SettingsPage + Home)"
-Cohesion: 0.06
-Nodes (37): DashboardLayout(), AccountAccess(), BuyInvestment(), Calendar(), ContactInformation(), DividendIncome(), EmptyState(), GrowthStatistics() (+29 more)
+### Community 4 - "Widget Folder Barrels"
+Cohesion: 0.05
+Nodes (9): Kebab-case Widget Folders, Mock-first Data Rule, Optional data Prop Contract, Widget Folder Barrel, Full Extraction Plan (superseded), Calendar(), CalendarData, CalendarEvent (+1 more)
 
-### Community 4 - "Runtime Dependencies (@base-ui/react, cmdk, embla-carousel-react, input-otp, next, next-themes, etc.)"
-Cohesion: 0.06
-Nodes (35): @base-ui/react, class-variance-authority, clsx, cmdk, embla-carousel-react, input-otp, next, next-themes (+27 more)
+### Community 5 - "Create Page & Preset Codes"
+Cohesion: 0.11
+Nodes (22): metadata, formatClipboardText(), Customizer(), configFromPresetCode(), parsePresetInput(), presetCodeFromConfig(), ActionButton(), Indicator (+14 more)
 
-### Community 5 - "DropdownMenu + Menubar + ContextMenu (all menu-family primitives: DropdownMenu, Menubar, ContextMenu)"
-Cohesion: 0.08
-Nodes (28): ref_base_ui_react_menu, ref_base_ui_react_menubar, DropdownMenu(), DropdownMenuCheckboxItem(), DropdownMenuContent(), DropdownMenuGroup(), DropdownMenuItem(), DropdownMenuLabel() (+20 more)
+### Community 6 - "cn() Utility & Avatar Field"
+Cohesion: 0.10
+Nodes (27): cn(), Avatar(), AvatarBadge(), AvatarFallback(), AvatarGroup(), AvatarGroupCount(), AvatarImage(), Checkbox() (+19 more)
 
-### Community 6 - "Combobox Primitive (autocomplete + chips selection: Combobox, ComboboxValue, ComboboxTrigger, etc.)"
-Cohesion: 0.09
-Nodes (23): ref_base_ui_react, ComboboxChip(), ComboboxChips(), ComboboxChipsInput(), ComboboxClear(), ComboboxContent(), ComboboxEmpty(), ComboboxGroup() (+15 more)
+### Community 7 - "Routing & App Config"
+Cohesion: 0.07
+Nodes (25): Remote Image Allowlist, Two-step Widget Registration, Single /create Route, Live Theme Customizer, ./app/**/*.ts, ./app/**/*.tsx, ./lib/**/*.ts, .next (+17 more)
 
-### Community 7 - "package.json + Build Config (package.json metadata, devDependencies, scripts)"
-Cohesion: 0.08
-Nodes (25): eslint, eslint-config-next, tailwindcss, @tailwindcss/postcss, @types/node, @types/react, @types/react-dom, typescript (+17 more)
+### Community 8 - "Progress Ring & Media Widgets"
+Cohesion: 0.11
+Nodes (14): ProgressRing(), ProgressRingProps, Badge(), badgeVariants, AlbumCard(), AlbumCardData, mockData, InvestmentPortfolio() (+6 more)
 
-### Community 8 - "cn() + Avatar + Misc (cn() utility + Avatar primitive + several small primitives)"
+### Community 9 - "Font & Accent Pickers"
 Cohesion: 0.14
-Nodes (23): ref_base_ui_react_avatar, cn(), Avatar(), AvatarBadge(), AvatarFallback(), AvatarGroup(), AvatarGroupCount(), AvatarImage() (+15 more)
+Nodes (19): MenuAccentPicker(), FontPicker(), Props, AaGlyph(), FONT_HEADING_OPTIONS, FONTS, getFont(), getMenuAccent() (+11 more)
 
-### Community 9 - "CLAUDE.md Knowledge (Authoritative Project Rules + Skills Index + Impeccable Rules + Operate Mode + Brief Wins)"
-Cohesion: 0.11
-Nodes (24): CLAUDE.md (Authoritative Project Rules), Document Supersession (prd.md + architecture.md removed; CLAUDE.md authoritative), graphify-out Knowledge Graph, Pitfalls (lint red, orphan CSS, shadcn-extraction readonly), Project Conventions (kebab-case widgets, optional data, semantic colors), Skills Index (shadcn / impeccable / ponytail), Verification Gate (build/lint/tsc), Impeccable Skill Rules (+16 more)
-
-### Community 10 - "Command Primitive (keyboard command palette: Command, CommandDialog, CommandInput, etc.)"
-Cohesion: 0.11
-Nodes (17): ref_cmdk, Command(), CommandDialog(), CommandEmpty(), CommandGroup(), CommandInput(), CommandItem(), CommandList() (+9 more)
-
-### Community 11 - "components.json (shadcn config: $schema, style, base, iconLibrary, aliases, etc.)"
+### Community 10 - "components.json Manifest"
 Cohesion: 0.09
 Nodes (21): aliases, components, hooks, lib, ui, utils, iconLibrary, menuAccent (+13 more)
 
-### Community 12 - "ContextMenu Primitive (right-click menu — separated from c5 on this run: ContextMenu/Portal/Item/etc.)"
-Cohesion: 0.12
-Nodes (10): ref_base_ui_react_context_menu, ContextMenuCheckboxItem(), ContextMenuContent(), ContextMenuItem(), ContextMenuLabel(), ContextMenuRadioItem(), ContextMenuSeparator(), ContextMenuShortcut() (+2 more)
-
-### Community 13 - "Drawer Primitive (bottom-sheet drawer: Drawer, DrawerContext, DrawerContextProps)"
-Cohesion: 0.14
-Nodes (11): ref_base_ui_react_drawer, DrawerContent(), DrawerContext, DrawerContextProps, DrawerDescription(), DrawerFooter(), DrawerHeader(), DrawerOverlay() (+3 more)
-
-### Community 14 - "Carousel Primitive (embla-powered carousel: Carousel, CarouselApi, UseCarouselParameters)"
+### Community 11 - "Theme Scope & Payload Builder"
 Cohesion: 0.18
-Nodes (14): ref_embla_carousel_react, Carousel(), CarouselApi, CarouselContent(), CarouselContext, CarouselContextProps, CarouselItem(), CarouselNext() (+6 more)
+Nodes (16): BaseColorPicker(), buildPayload(), formatVarBlock(), Payload, buildCss(), ScopeProps, ThemeScope(), ACCENTS (+8 more)
 
-### Community 15 - "AlertDialog Primitive (destructive confirmation: AlertDialog, AlertDialogTrigger, etc.)"
-Cohesion: 0.14
-Nodes (10): ref_base_ui_react_alert_dialog, AlertDialogAction(), AlertDialogCancel(), AlertDialogContent(), AlertDialogDescription(), AlertDialogFooter(), AlertDialogHeader(), AlertDialogMedia() (+2 more)
+### Community 12 - "Input Group Primitive"
+Cohesion: 0.15
+Nodes (14): InputGroup(), InputGroupAddon(), inputGroupAddonVariants, InputGroupButton(), inputGroupButtonVariants, InputGroupInput(), InputGroupText(), InputGroupTextarea() (+6 more)
 
-### Community 16 - "Field Primitive (form-field composition: FieldSet, FieldLegend, Field, FieldGroup, etc.)"
-Cohesion: 0.16
-Nodes (12): Field(), FieldContent(), FieldDescription(), FieldError(), FieldGroup(), FieldLabel(), FieldLegend(), FieldSeparator() (+4 more)
-
-### Community 17 - "tsconfig Compiler Options (compilerOptions: target, allowJs, esModuleInterop, jsx, module, etc.)"
-Cohesion: 0.14
-Nodes (14): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, module, moduleResolution (+6 more)
-
-### Community 18 - "IconPlaceholder (cross-cutting: IconPlaceholder + IconPlaceholderProps + the create-route helper)"
-Cohesion: 0.19
-Nodes (9): ref_base_ui_react_checkbox, IconPlaceholder(), IconPlaceholderProps, Checkbox(), NativeSelect(), NativeSelectOptGroup(), NativeSelectOption(), NativeSelectProps (+1 more)
-
-### Community 19 - "Item Primitive (list-row layout: ItemGroup, ItemSeparator, Item, ItemHeader, etc.)"
-Cohesion: 0.18
-Nodes (12): Item(), ItemActions(), ItemContent(), ItemDescription(), ItemFooter(), ItemGroup(), ItemHeader(), ItemMedia() (+4 more)
-
-### Community 20 - "MessageScroller Primitive (chat scroll container: MessageScrollerProvider, MessageScroller, etc.)"
+### Community 13 - "Radius & Chart Color Pickers"
 Cohesion: 0.17
-Nodes (10): website_shadcn_extraction_ui_packages_react_src_message_scroller_index, website_shadcn_extraction_ui_packages_react_src_message_scroller_index_messagescroller, website_shadcn_extraction_ui_packages_react_src_message_scroller_index_usemessagescroller, website_shadcn_extraction_ui_packages_react_src_message_scroller_index_usemessagescrollerscrollable, website_shadcn_extraction_ui_packages_react_src_message_scroller_index_usemessagescrollervisibility, MessageScroller(), MessageScrollerButton(), MessageScrollerContent() (+2 more)
+Nodes (15): ChartColorPicker(), RadiusPicker(), CircleOutline(), SettingCard(), SwatchDot(), StylePicker(), ThemePicker(), useDesignSystem() (+7 more)
 
-### Community 21 - "Attachment Primitive (file-attach UI: attachmentVariants, Attachment, AttachmentGroup, etc.)"
-Cohesion: 0.20
-Nodes (11): Attachment(), AttachmentAction(), AttachmentActions(), AttachmentContent(), AttachmentDescription(), AttachmentGroup(), AttachmentMedia(), attachmentMediaVariants (+3 more)
-
-### Community 22 - "tsconfig Paths (paths: @/registry/bases/base/ui/*, ./src/components/ui/*, etc.)"
+### Community 14 - "Accordion & Tabs"
 Cohesion: 0.18
-Nodes (11): ./app/(create)/components/*, ./lib/*, ./shadcn-extraction/ui/packages/react/src/*, ./src/components/ui/*, ./src/hooks/*, paths, @/app/(create)/components/*, @/registry/bases/base/hooks/* (+3 more)
+Nodes (12): Accordion(), AccordionContent(), AccordionItem(), AccordionTrigger(), Tabs(), TabsContent(), TabsList(), tabsListVariants (+4 more)
 
-### Community 23 - "NavigationMenu Primitive (top-nav mega-menu: NavigationMenu, NavigationMenuList, etc.)"
+### Community 15 - "Third-party UI Dependencies"
+Cohesion: 0.12
+Nodes (17): @base-ui/react, class-variance-authority, clsx, lucide-react, next, next-themes, react-resizable-panels, shadcn (+9 more)
+
+### Community 16 - "Build Toolchain"
+Cohesion: 0.12
+Nodes (17): eslint, eslint-config-next, tailwindcss, @tailwindcss/postcss, @types/node, @types/react, @types/react-dom, typescript (+9 more)
+
+### Community 17 - "Design System State"
+Cohesion: 0.18
+Nodes (14): IconLibraryPicker(), Action, DEFAULT_CONFIG, DesignSystemContext, DesignSystemProvider(), loadFromStorage(), persist(), pickRandom() (+6 more)
+
+### Community 18 - "Table Primitive"
+Cohesion: 0.17
+Nodes (12): CardAction(), Table(), TableBody(), TableCaption(), TableCell(), TableFooter(), TableHead(), TableHeader() (+4 more)
+
+### Community 19 - "Empty State Primitive"
+Cohesion: 0.40
+Nodes (8): Empty(), EmptyContent(), EmptyDescription(), EmptyHeader(), EmptyMedia(), emptyMediaVariants, EmptyTitle(), Spinner()
+
+### Community 20 - "Dialog Primitive"
+Cohesion: 0.18
+Nodes (7): Dialog(), DialogContent(), DialogDescription(), DialogFooter(), DialogHeader(), DialogOverlay(), DialogTitle()
+
+### Community 21 - "Verification Gate & Scripts"
 Cohesion: 0.20
-Nodes (10): ref_base_ui_react_navigation_menu, NavigationMenu(), NavigationMenuContent(), NavigationMenuIndicator(), NavigationMenuItem(), NavigationMenuLink(), NavigationMenuList(), NavigationMenuPositioner() (+2 more)
+Nodes (9): Verification Gate, name, private, scripts, build, dev, lint, start (+1 more)
 
-### Community 24 - "Badge Primitive + CVA reference (Badge, badgeVariants + ref_class_variance_authority)"
-Cohesion: 0.27
-Nodes (8): ref_base_ui_react_use_render, ref_class_variance_authority, Badge(), badgeVariants, Marker(), MarkerContent(), MarkerIcon(), markerVariants
+### Community 22 - "Tooltip & Claimable Balance"
+Cohesion: 0.29
+Nodes (5): Tooltip(), TooltipContent(), TooltipTrigger(), ClaimableBalance(), claimableBalanceMockData
 
-### Community 25 - "UI Index/Registry (ui/index.ts, _registry.ts, ui/direction.tsx — shadcn registry plumbing)"
+### Community 23 - "Lucide Icon Shim"
 Cohesion: 0.22
-Nodes (5): ref_base_ui_react_direction_provider, ref_shadcn_schema, Kbd(), KbdGroup(), ui
+Nodes (7): fallback, Icon, IconComp, LucideIcon, LucideProps, m, names
 
-### Community 26 - "Toggle + ToggleGroup Primitives (ToggleGroupContext, ToggleGroup, Toggle variants)"
-Cohesion: 0.33
-Nodes (7): ref_base_ui_react_toggle, ref_base_ui_react_toggle_group, ToggleGroup(), ToggleGroupContext, ToggleGroupItem(), Toggle(), toggleVariants
-
-### Community 27 - "Root Layout + Fonts (layout.tsx + ebGaramondHeading + notoSans + Geist font loading)"
-Cohesion: 0.22
-Nodes (8): ref_next_font_google, website_app_globals, ebGaramondHeading, geistMono, geistSans, metadata, notoSans, RootLayout()
-
-### Community 28 - "Pagination Primitive (paged navigation: Pagination, PaginationContent, etc.)"
-Cohesion: 0.22
-Nodes (7): Pagination(), PaginationContent(), PaginationEllipsis(), PaginationLink(), PaginationLinkProps, PaginationNext(), PaginationPrevious()
-
-### Community 29 - "Bubble Primitive (chat-bubble UI: BubbleGroup, bubbleVariants, Bubble, etc.)"
+### Community 24 - "Chart Palette Tokens"
 Cohesion: 0.32
-Nodes (7): ref_base_ui_react_merge_props, Bubble(), BubbleContent(), BubbleGroup(), BubbleReactions(), bubbleReactionsVariants, bubbleVariants
+Nodes (7): Chart Palette Token Convention, Runtime Token Injection, @theme inline Token Dance, CHART_PALETTES, ChartPalette, getChartPalette(), ThemeName
 
-### Community 30 - "Popover Primitive (floating overlay: Popover, PopoverTrigger, PopoverContent, etc.)"
-Cohesion: 0.25
-Nodes (5): ref_base_ui_react_popover, PopoverContent(), PopoverDescription(), PopoverHeader(), PopoverTitle()
+### Community 25 - "Skeleton & Loading State"
+Cohesion: 0.36
+Nodes (4): Skeleton(), LoadingState(), LoadingStateData, mockData
 
-### Community 31 - "Utils + AspectRatio (utils.ts + AspectRatio primitive + Kbd/Slider scattered)"
-Cohesion: 0.25
-Nodes (5): ref_base_ui_react_switch, ref_clsx, ref_tailwind_merge, AspectRatio(), Switch()
-
-### Community 32 - "Breadcrumb Primitive (path breadcrumb nav: Breadcrumb, BreadcrumbList, etc.)"
-Cohesion: 0.25
-Nodes (7): Breadcrumb(), BreadcrumbEllipsis(), BreadcrumbItem(), BreadcrumbLink(), BreadcrumbList(), BreadcrumbPage(), BreadcrumbSeparator()
-
-### Community 33 - "Empty Primitive (no-data/empty-state composition: Empty, EmptyHeader, etc.)"
-Cohesion: 0.29
-Nodes (7): Empty(), EmptyContent(), EmptyDescription(), EmptyHeader(), EmptyMedia(), emptyMediaVariants, EmptyTitle()
-
-### Community 34 - "Progress Primitive (progress bar: Progress, ProgressTrack)"
-Cohesion: 0.29
-Nodes (6): ref_base_ui_react_progress, Progress(), ProgressIndicator(), ProgressLabel(), ProgressTrack(), ProgressValue()
-
-### Community 35 - "Tabs Primitive (tabbed content: Tabs, tabsListVariants, TabsTrigger, etc.)"
+### Community 26 - "Progress Primitive"
 Cohesion: 0.33
-Nodes (6): ref_base_ui_react_tabs, Tabs(), TabsContent(), TabsList(), tabsListVariants, TabsTrigger()
+Nodes (5): Progress(), ProgressIndicator(), ProgressLabel(), ProgressTrack(), ProgressValue()
 
-### Community 36 - "tsconfig Include (include patterns: next-env.d.ts, **/*.ts, **/*.tsx)"
-Cohesion: 0.29
-Nodes (7): **/*.mts, .next/dev/types/**/*.ts, next-env.d.ts, .next/types/**/*.ts, **/*.ts, **/*.tsx, include
-
-### Community 37 - "tsconfig Exclude + Next Config (exclude + next.config.ts + nextConfig)"
-Cohesion: 0.29
-Nodes (5): .next, node_modules, shadcn-extraction, nextConfig, exclude
-
-### Community 38 - "Accordion Primitive (expand-collapse sections: Accordion, AccordionItem, etc.)"
-Cohesion: 0.33
-Nodes (5): ref_base_ui_react_accordion, Accordion(), AccordionContent(), AccordionItem(), AccordionTrigger()
-
-### Community 39 - "InputOTP Primitive (one-time-code entry: InputOTP, InputOTPGroup, etc.)"
-Cohesion: 0.33
-Nodes (4): ref_input_otp, InputOTP(), InputOTPGroup(), InputOTPSlot()
-
-### Community 40 - "Alert Primitive (callout/inline notice: alertVariants, Alert, AlertTitle, etc.)"
+### Community 27 - "shadcn Skill Rules"
 Cohesion: 0.40
-Nodes (5): Alert(), AlertAction(), AlertDescription(), AlertTitle(), alertVariants
+Nodes (5): Shadcn Skill Rules, Shadcn CLI Workflow (info/docs/add/preset), Forms & Component Composition Rules, Project Context Key Fields (aliases/isRSC/tailwind/base/style), Styling & Tailwind Rules
 
-### Community 42 - "HoverCard Primitive (hover-revealed card: HoverCard, HoverCardTrigger)"
-Cohesion: 0.40
-Nodes (2): ref_base_ui_react_preview_card, HoverCardContent()
+### Community 28 - "Menu Color Picker"
+Cohesion: 0.60
+Nodes (4): MenuColorPicker(), getMenuColor(), MENU_COLORS, MenuColorValue
 
-### Community 43 - "RadioGroup Primitive (mutually-exclusive radio: RadioGroup, RadioGroupItem)"
-Cohesion: 0.40
-Nodes (4): ref_base_ui_react_radio, ref_base_ui_react_radio_group, RadioGroup(), RadioGroupItem()
-
-### Community 44 - "ESLint Config (eslint.config.mjs + eslintConfig + ref_eslint_config)"
-Cohesion: 0.40
-Nodes (4): ref_eslint_config, ref_eslint_config_next_core_web_vitals, ref_eslint_config_next_typescript, eslintConfig
-
-### Community 45 - "Resizable Primitive (resizable panel groups: ResizablePanelGroup, ResizablePanel)"
-Cohesion: 0.40
-Nodes (3): ref_react_resizable_panels, ResizableHandle(), ResizablePanelGroup()
-
-### Community 46 - "ButtonGroup Primitive (buttonGroupVariants, ButtonGroup + Separator)"
+### Community 29 - "Lint Config & Icon Resolver"
 Cohesion: 0.50
-Nodes (4): ButtonGroup(), ButtonGroupSeparator(), ButtonGroupText(), buttonGroupVariants
+Nodes (3): Clean Lint Invariant, Icon Placeholder Resolver, eslintConfig
 
-### Community 47 - "ScrollArea Primitive (custom scrollbar: ScrollArea, ScrollBar)"
+### Community 30 - "Impeccable Design Skill"
 Cohesion: 0.50
-Nodes (3): ref_base_ui_react_scroll_area, ScrollArea(), ScrollBar()
+Nodes (4): Impeccable Skill Rules, The Brief Wins Principle, Operate Mode (Dashboard), Visitor Mode Framework (Persuade/Operate/Read/Experience)
 
-### Community 48 - "TS Compiler Lib Options (lib: dom, dom.iterable, esnext)"
-Cohesion: 0.50
-Nodes (4): dom, dom.iterable, esnext, lib
-
-### Community 49 - "Sonner Toaster (Toaster + ref_next_themes — toast container)"
-Cohesion: 0.50
-Nodes (2): ref_next_themes, ref_sonner
-
-### Community 50 - "Slider Primitive (Slider + ref_base_ui_react_slider)"
+### Community 31 - "Ponytail Lazy-coding Skill"
 Cohesion: 0.67
-Nodes (2): ref_base_ui_react_slider, Slider()
+Nodes (4): Ponytail Skill Rules, Ponytail Intensity Levels (lite/full/ultra), Bug Fix = Root Cause Not Symptom, The Lazy Ladder (YAGNI Rungs)
+
+## Ambiguous Edges - Review These
+- `Full Extraction Plan (superseded)` → `Four Chart Wrappers`  [AMBIGUOUS]
+  .claude/plans/full-extraction-shadcn-extraction-to-website.md · relation: conceptually_related_to
+- `Full Extraction Plan (superseded)` → `Widget Folder Barrel`  [AMBIGUOUS]
+  .claude/plans/full-extraction-shadcn-extraction-to-website.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **128 isolated node(s):** `IconPlaceholderProps`, `ebGaramondHeading`, `notoSans`, `geistSans`, `geistMono` (+123 more)
+- **159 isolated node(s):** `metadata`, `ebGaramondHeading`, `notoSans`, `geistSans`, `geistMono` (+154 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **6 thin communities (<2 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **29 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+
+## Suggested Questions
+_Questions this graph is uniquely positioned to answer:_
+
+- **What is the exact relationship between `Full Extraction Plan (superseded)` and `Four Chart Wrappers`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **What is the exact relationship between `Full Extraction Plan (superseded)` and `Widget Folder Barrel`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **Why does `cn()` connect `cn() Utility & Avatar Field` to `Card Alignment & Primitives`, `Chart Library Doctrine`, `Preview Grid Layout`, `Create Page & Preset Codes`, `Routing & App Config`, `Progress Ring & Media Widgets`, `Font & Accent Pickers`, `Input Group Primitive`, `Radius & Chart Color Pickers`, `Accordion & Tabs`, `Table Primitive`, `Empty State Primitive`, `Dialog Primitive`, `Tooltip & Claimable Balance`, `Skeleton & Loading State`, `Progress Primitive`?**
+  _High betweenness centrality (0.322) - this node is a cross-community bridge._
+- **Why does `react` connect `Preview Grid Layout` to `Chart Library Doctrine`, `Create Page & Preset Codes`, `Font & Accent Pickers`, `Theme Scope & Payload Builder`, `Radius & Chart Color Pickers`, `Third-party UI Dependencies`, `Design System State`?**
+  _High betweenness centrality (0.157) - this node is a cross-community bridge._
+- **Why does `dependencies` connect `Third-party UI Dependencies` to `cmdk Dependency`, `Embla Carousel Dependency`, `Input OTP Dependency`, `Preview Grid Layout`, `react-day-picker Dependency`, `react-dom Dependency`, `Chart Library Doctrine`, `Sonner Dependency`, `Tabler Icons Dependency`, `tailwind-merge Dependency`, `tw-animate-css Dependency`, `Verification Gate & Scripts`?**
+  _High betweenness centrality (0.143) - this node is a cross-community bridge._
+- **What connects `metadata`, `ebGaramondHeading`, `notoSans` to the rest of the system?**
+  _159 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Card Alignment & Primitives` be split into smaller, more focused modules?**
+  _Cohesion score 0.05467762326169406 - nodes in this community are weakly interconnected._

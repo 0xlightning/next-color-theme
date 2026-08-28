@@ -6,7 +6,7 @@ import { getRadius, RADII, type RadiusName } from "@/registry"
 import { SettingCard } from "./setting-card"
 
 /** Small rounded-corner preview SVG, lifted from the v4 RadiusPicker. */
-function RadiusGlyph({ value }: { value: string }) {
+function RadiusGlyph() {
   return (
     <svg
       aria-hidden
@@ -34,9 +34,10 @@ export function RadiusPicker() {
   return (
     <SettingCard
       label="Radius"
+      field="radius"
       value={state.radius}
       valueLabel={current?.label ?? "—"}
-      indicator={<RadiusGlyph value={current?.value ?? "0"} />}
+      indicator={<RadiusGlyph />}
       options={RADII.map((radius) => ({
         value: radius.name,
         label: radius.label,

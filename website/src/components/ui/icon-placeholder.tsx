@@ -9,16 +9,23 @@ interface IconPlaceholderProps extends React.SVGProps<SVGSVGElement> {
   remixicon?: string;
 }
 
+// Only the tabler library is bundled; the other names are accepted so the
+// icon-library picker can round-trip them without leaking onto the <svg>.
+const tablerIcons = TablerIcons as unknown as Record<
+  string,
+  React.ComponentType<React.SVGProps<SVGSVGElement>> | undefined
+>;
+
 export const IconPlaceholder: React.FC<IconPlaceholderProps> = ({
-  lucide,
+  lucide: _lucide,
   tabler,
-  hugeicons,
-  phosphor,
-  remixicon,
+  hugeicons: _hugeicons,
+  phosphor: _phosphor,
+  remixicon: _remixicon,
   ...props
 }) => {
   if (tabler) {
-    const IconComponent = (TablerIcons as any)[tabler];
+    const IconComponent = tablerIcons[tabler];
     if (IconComponent) {
       return <IconComponent {...props} />;
     }

@@ -47,6 +47,7 @@ export function MenuAccentPicker() {
   return (
     <SettingCard
       label="Menu Accent"
+      field="menuAccent"
       value={state.menuAccent}
       valueLabel={current?.label ?? "—"}
       indicator={<AccentGlyph value={state.menuAccent} />}

@@ -48,6 +48,7 @@ export function FontPicker({ param }: Props) {
   return (
     <SettingCard
       label={param === "fontHeading" ? "Heading" : "Font"}
+      field={param}
       value={String(currentValue)}
       valueLabel={current?.label ?? "—"}
       indicator={<AaGlyph fontFamily={current?.family ?? "inherit"} />}

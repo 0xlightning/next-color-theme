@@ -42,10 +42,8 @@
     "./src/**/*.ts",
     "./src/**/*.tsx",
     "./lib/**/*.ts",
-    "./components/**/*.ts",
-    "./components/**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", ".next", "../shadcn-extraction", "../shadcn-extraction/**"]
+  "exclude": ["node_modules", ".next"]
 }

@@ -14,6 +14,7 @@ export function IconLibraryPicker() {
   return (
     <SettingCard
       label="Icon Library"
+      field="iconLibrary"
       value={state.iconLibrary}
       valueLabel={current?.label ?? "—"}
       indicator={

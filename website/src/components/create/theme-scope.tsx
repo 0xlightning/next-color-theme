@@ -1,81 +1,43 @@
 "use client"
 
 import * as React from "react"
+import type { DesignSystemConfig } from "@/registry/types"
 import { useDesignSystem } from "./use-design-system"
-import {
-  getBaseColor,
-  getAccent,
-  resolveRadiusValue,
-  getStyle,
-  getFont,
-  getChartPalette,
-} from "@/registry"
+import { buildThemeVars, formatVarBlock } from "./build-payload"
 
 const STYLE_ELEMENT_ID = "create-theme-vars"
 
-function buildCss(config: ReturnType<typeof useDesignSystem>["state"]): string {
-  const base = getBaseColor(config.baseColor)
-  const accent = getAccent(config.accent)
-  const radius = resolveRadiusValue(config.radius)
-  const style = getStyle(config.style)
-  const font = getFont(config.font)
-  const chartPalette = getChartPalette(config.chartColor)
-  if (!base || !accent) {
+/**
+ * The preview's CSS lives under `.theme-scope` rather than `:root` so the
+ * customizer chrome around it keeps its own colors. Both mode blocks are
+ * always emitted — `/create` renders a light scope and a dark scope side by
+ * side, so both have to be live at once.
+ */
+function buildCss(config: DesignSystemConfig): string {
+  const vars = buildThemeVars(config)
+  if (!vars) {
     return ""
   }
-
-  // Five chart swatches per palette, indexed 0..4 → --chart-1..5.
-  const chartVars = chartPalette
-    ? chartPalette.swatches.map((value, idx) => `    --chart-${idx + 1}: ${value};`)
-    : []
-
-  const lightEntries = Object.entries({
-    ...base.light,
-    primary: accent.primary,
-    "primary-foreground": accent.primaryForeground,
-    accent: accent.primary,
-    "accent-foreground": accent.primaryForeground,
-    radius,
-  })
-    .filter(([, value]) => Boolean(value))
-    .map(([k, v]) => `    --${k}: ${v};`)
-
-  const darkEntries = Object.entries({
-    ...base.dark,
-    primary: accent.primary,
-    "primary-foreground": accent.primaryForeground,
-    accent: accent.primary,
-    "accent-foreground": accent.primaryForeground,
-  })
-    .filter(([, value]) => Boolean(value))
-    .map(([k, v]) => `    --${k}: ${v};`)
-
-  const fontFamily = font?.family ?? "var(--font-geist-sans), sans-serif"
-  const headingFamily =
-    style?.headingFontFamily ?? "var(--font-heading), inherit"
-
   return [
     ".theme-scope {",
     "  color-scheme: light;",
-    ...lightEntries,
-    ...chartVars,
-    `  --font-sans: ${fontFamily};`,
-    `  --font-heading: ${headingFamily};`,
-    "  --radius: " + radius + ";",
+    formatVarBlock({ ...vars.light, ...vars.shared }, "  "),
     "}",
     ".theme-scope.dark {",
     "  color-scheme: dark;",
-    ...darkEntries,
-    ...chartVars,
+    formatVarBlock(vars.dark, "  "),
     "}",
   ].join("\n")
 }
 
 type ScopeProps = {
   children: React.ReactNode
+  /** Pin the scope to one mode. Omit to follow `state.mode`. */
+  mode?: "light" | "dark"
+  className?: string
 }
 
-export function ThemeScope({ children }: ScopeProps) {
+export function ThemeScope({ children, mode, className }: ScopeProps) {
   const { state } = useDesignSystem()
   const css = React.useMemo(() => buildCss(state), [state])
 
@@ -95,8 +57,61 @@ export function ThemeScope({ children }: ScopeProps) {
     }
   }, [css])
 
-  const className =
-    "theme-scope" + (state.mode === "dark" ? " dark" : "")
+  const resolved = mode ?? state.mode
+  return (
+    <div
+      className={[
+        "theme-scope",
+        resolved === "dark" ? "dark" : "",
+        className ?? "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      {children}
+    </div>
+  )
+}
 
-  return <div className={className}>{children}</div>
+/**
+ * Same token emission, but scoped to an arbitrary selector and driven by a
+ * config that is *not* the live one. `/creates` uses this to paint each saved
+ * design's thumbnail in its own colors.
+ */
+export function StaticThemeScope({
+  config,
+  mode = "light",
+  className,
+  children,
+}: {
+  config: DesignSystemConfig
+  mode?: "light" | "dark"
+  className?: string
+  children: React.ReactNode
+}) {
+  const vars = React.useMemo(() => buildThemeVars(config), [config])
+  if (!vars) {
+    return null
+  }
+  // Inline styles, not a <style> tag: the token names are runtime data, so
+  // they cannot be Tailwind classes, and each card needs its own values.
+  const style = Object.fromEntries(
+    Object.entries({
+      ...(mode === "dark" ? vars.dark : vars.light),
+      ...vars.shared,
+    })
+      .filter(([, value]) => Boolean(value))
+      .map(([key, value]) => [`--${key}`, value])
+  ) as React.CSSProperties
+
+  return (
+    <div
+      className={[mode === "dark" ? "dark" : "", className ?? ""]
+        .filter(Boolean)
+        .join(" ")}
+      style={{ ...style, colorScheme: mode }}
+    >
+      {children}
+    </div>
+  )
 }

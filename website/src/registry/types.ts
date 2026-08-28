@@ -57,6 +57,21 @@ export type FontOption = {
 
 export type IconLibraryValue = "tabler" | "lucide"
 
+/**
+ * Which primitive library the *exported* code targets. The live preview
+ * always renders `@base-ui/react`; this only retargets `components.json`
+ * and the install command emitted by `build-payload.ts`.
+ */
+export type LibraryValue = "base-ui" | "radix"
+
+export type LibraryOption = {
+  value: LibraryValue
+  label: string
+  /** shadcn `style` written into the exported components.json. */
+  style: string
+  description: string
+}
+
 export type IconLibraryOption = {
   value: IconLibraryValue
   label: string
@@ -119,4 +134,5 @@ export type DesignSystemConfig = {
   chartColor: ThemeName
   menuColor: MenuColorValue
   menuAccent: MenuAccentValue
+  library: LibraryValue
 }
