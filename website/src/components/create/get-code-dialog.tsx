@@ -40,7 +40,7 @@ function CodePanel({ code, label }: { code: string; label: string }) {
           Copy
         </ActionButton>
       </div>
-      <pre className="h-[46vh] overflow-auto rounded-md border border-border bg-muted/40 p-3 text-[11px] leading-relaxed">
+      <pre className="h-[55vh] overflow-auto rounded-md border border-border bg-muted/40 p-3 text-[11px] leading-relaxed">
         <code>{code}</code>
       </pre>
     </div>
@@ -90,7 +90,7 @@ export function GetCodeDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[88vh] w-[min(92vw,52rem)] max-w-none flex-col gap-4 overflow-hidden sm:max-w-none">
+      <DialogContent className="flex max-h-[95vh] w-[min(96vw,64rem)] max-w-none flex-col gap-4 overflow-hidden sm:max-w-none">
         <DialogHeader>
           <DialogTitle>Get Code</DialogTitle>
           <DialogDescription>
@@ -137,7 +137,7 @@ export function GetCodeDialog({
               </p>
             </div>
 
-            <div className="h-[46vh] overflow-y-auto rounded-md border border-border p-3">
+            <div className="h-[55vh] overflow-y-auto rounded-md border border-border p-3">
               <div className="flex flex-wrap gap-1.5">
                 {CATALOG.map((entry) => {
                   const isSelected = selected.has(entry.name)
