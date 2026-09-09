@@ -55,7 +55,12 @@ export type FontOption = {
   type: "sans" | "serif" | "mono"
 }
 
-export type IconLibraryValue = "tabler" | "lucide"
+export type IconLibraryValue =
+  | "lucide"
+  | "tabler"
+  | "hugeicons"
+  | "phosphor"
+  | "remixicon"
 
 /**
  * Which primitive library the *exported* code targets. The live preview

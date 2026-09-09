@@ -1,224 +1,314 @@
-# CLAUDE.md
+# CLAUDE.md — Agent Navigation Guide
 
-Project: **Next Color Theme** — Next.js 16 + React 19 live theme customizer
-(`website/`). Working directory for all commands below is `website/` unless
-noted.
+Project: **Next Color Theme** — Next.js 16 + React 19 live theme customizer.
+All source lives under `website/`. Run every command from `website/` unless stated otherwise.
 
-`README.md` is the human-facing overview. This file is the authoritative
-source of ground truth. New agents start here.
+`README.md` is the human-facing product overview (features, stack, routes, structure).
+This file is the **agent-facing ground truth**: how to navigate the code, locate logic,
+search files, and apply the rules that keep the project stable.
 
-## Three routes
+---
 
-- **`/dashboard`** — landing page. "Get Design" → `/create`, "Saved Designs"
-  → `/creates`.
-- **`/create`** — the customizer sidebar plus the showcase block rendered
-  twice, once in a light `ThemeScope` and once in a dark one.
-- **`/creates`** — gallery of designs saved from the customizer, stored in
-  localStorage under `next-color-theme:saved-designs`.
+## 1. Quick orientation
 
-`/` redirects to `/dashboard`, declared in `next.config.ts` — there is
-**no `app/page.tsx`**, and adding one would shadow the redirect.
+```
+next-color-theme/
+  website/                 ← ALL source + dev commands live here
+    app/                   ← Next.js App Router pages + global CSS
+    src/
+      components/
+        create/            ← customizer engine (11 pickers + state + export)
+        creates/           ← saved-design gallery
+        charts/            ← 4 Recharts wrappers
+        ui/                ← shadcn primitives
+      registry/            ← design-token data (the canonical source of truth)
+      lib/                 ← tsconfig-path stubs only
+    lib/utils.ts           ← cn() helper
+  graphify-out/            ← queryable knowledge graph of the codebase
+  .claude/
+    rules/                 ← scoped lint rules (ui-primitives.md, charts.md)
+    skills/                ← loadable skill files (shadcn, impeccable, ponytail, tailwind-v4)
+    plans/                 ← planning artifacts
+```
 
-`src/components/site-header.tsx` is the shared nav for all three. It sits
-outside `ThemeScope` on purpose: it is app chrome, not previewed theme.
+---
 
-The 42 mock widgets and the horizontally-scrolling preview grid were deleted.
-One `showcase-block.tsx` replaces them.
+## 2. Routes — where each page lives
 
-## Verification gate (mandatory before any "done" claim)
+| URL | Page file | What renders |
+|---|---|---|
+| `/` | *(no file)* | 307 → `/dashboard` via `website/next.config.ts` |
+| `/dashboard` | `website/app/dashboard/page.tsx` | Landing: "Get Design" + "Saved Designs" links |
+| `/create` | `website/app/create/page.tsx` | `<Customizer>` sidebar + `<ShowcaseBlock>` in light AND dark |
+| `/creates` | `website/app/creates/page.tsx` | `<DesignGallery>` of saved designs |
 
-Run all three from `website/`. All must exit 0:
+> **Never add `app/page.tsx`** — it would shadow the `/` → `/dashboard` redirect in `next.config.ts`.
+
+The shared nav `<SiteHeader>` lives in `src/components/site-header.tsx`.
+It is mounted **outside** any `ThemeScope` intentionally — it is app chrome, not a themed surface.
+
+---
+
+## 3. How to find logic — a file-by-file map
+
+### State: where config lives
+
+| What | File |
+|---|---|
+| Live customizer state + reducer + `DesignSystemProvider` | `src/components/create/use-design-system.tsx` |
+| `DesignSystemConfig` type (the 13-field shape) | `src/registry/types.ts` |
+| Default config (`DEFAULT_CONFIG`) | `use-design-system.tsx` line ~28 |
+| localStorage key for live state | `"next-color-theme:create-state"` (same file) |
+| Saved designs store (`useSyncExternalStore`) | `src/components/create/use-saved-designs.tsx` |
+| localStorage key for saved designs | `"next-color-theme:saved-designs"` (same file) |
+
+### Token data: registry
+
+All design-token data is in `src/registry/`. Add a new token option here first; the
+picker and randomizer pick it up automatically.
+
+| File | What's inside |
+|---|---|
+| `types.ts` | Every TypeScript type used by the customizer |
+| `options.ts` | `FONTS`, `THEMES`, `RADII`, `MENU_COLORS`, etc. + getter helpers |
+| `accents.ts` | `ACCENTS` array (primary / primaryForeground per accent name) |
+| `base-colors.ts` | `BASE_COLORS` array (light + dark CSS var maps per base color) |
+| `chart-palettes.ts` | `CHART_PALETTES` (5-swatch arrays keyed by theme name) |
+| `styles.ts` | `STYLES` array (wrapperClassName, fontFamily, headingFontFamily) |
+| `index.ts` | Re-exports everything; always import from `"@/registry"` |
+
+### Config → CSS: the single pipeline
+
+```
+DesignSystemConfig
+    │
+    ▼
+buildThemeVars()          ← src/components/create/build-payload.ts
+    │  returns ThemeVars { light, dark, shared }
+    ▼
+┌─────────────────────────────────────────────────────────┐
+│  ThemeScope (live preview)   → injects <style> tag      │
+│  StaticThemeScope (/creates) → inline style= on div     │
+│  buildPayload() (Get Code)   → formats globals.css text │
+└─────────────────────────────────────────────────────────┘
+```
+
+**`buildThemeVars()` is the single source of truth.** Do NOT create a second config→CSS mapping.
+
+### Pickers (customizer sidebar controls)
+
+Each picker is a self-contained file in `src/components/create/`:
+
+| Picker file | Controls |
+|---|---|
+| `style-picker.tsx` | Style (luma, …) |
+| `base-color-picker.tsx` | Base color (mist, slate, …) |
+| `theme-picker.tsx` | Primary color theme (cyan, blue, …) |
+| `chart-color-picker.tsx` | Chart palette |
+| `font-picker.tsx` | Body font + heading font (param prop) |
+| `icon-library-picker.tsx` | Tabler / Lucide |
+| `library-picker.tsx` | Base UI / Radix (export target only) |
+| `radius-picker.tsx` | Border radius (none → round) |
+| `menu-picker.tsx` | Menu color (default / inverted / translucent) |
+| `accent-picker.tsx` | Menu accent (subtle / bold) |
+
+`setting-card.tsx` is the shared row primitive that wraps every picker. It owns the lock toggle UI.
+`customizer.tsx` is the sidebar shell that stacks all pickers and the footer action buttons.
+
+### Preview surface
+
+`src/components/create/showcase-block.tsx` — the **only** preview surface.
+`/create` mounts it twice: once in `<ThemeScope mode="light">`, once in `<ThemeScope mode="dark">`.
+
+Rules inside the showcase:
+- All element `id`s are suffixed with `mode` to avoid duplicate IDs (e.g. `id={email-${mode}}`).
+- All data is deterministic module-level consts — no `fetch()`, no `Math.random()` in render.
+- Chart type rules: `ProgressRing` for numeric %, `DonutChart` for categorical shares,
+  `BarChart` for time-series, `MiniBarChart` for inline row data.
+
+### Export pipeline
+
+`get-code-dialog.tsx` — the UI dialog.
+`build-payload.ts` — `buildPayload(config, components)` generates three outputs:
+- `componentsJson` — paste-ready `components.json`
+- `globalsCss` — paste-ready `globals.css` with literal font family names (not `var()` refs)
+- `installCommand` — `npx shadcn@latest init … && npx shadcn@latest add …`
+
+`registry-catalog.ts` — flattens the shadcn manifest for the component picker in the dialog.
+
+### Preset codec
+
+`preset-code.ts` encodes/decodes 10 config fields via `shadcn/preset`.
+`mode` and `accent` are **excluded** from presets (mode is a UI toggle; accent is local).
+`configFromPresetCode()` returns a partial config; callers overlay `mode`, `accent`, `library`.
+
+### Saved designs
+
+`use-saved-designs.tsx`:
+- `useSavedDesigns()` — React hook backed by `useSyncExternalStore` (not setState in effect).
+- `findSavedDesign(id)` — one-shot read, used by `use-design-system.tsx` for the `?design=` hand-off.
+- `suggestName(config)` — generates "Cyan · Mist · Luma" default name.
+
+### Charts
+
+Four wrappers in `src/components/charts/`:
+- `BarChart.tsx`, `DonutChart.tsx` — thin re-exports of `ui/chart.tsx` types.
+- `MiniBarChart.tsx` — sparkline bar row.
+- `ProgressRing.tsx` — SVG ring for numeric percentage.
+
+`AreaChart`, `LineChart`, and `Sparkline` no longer exist as named exports. Use
+`ui/chart.tsx` directly with `type="area"` or `type="line"` if needed.
+
+### UI primitives
+
+`src/components/ui/` — shadcn primitives. **Never hand-write new components here.**
+Add primitives with `npx shadcn add <name>` only.
+
+Two files need post-install patches:
+- `calendar.tsx` — `CalendarDayButton` must pin `data-day` to `toLocaleDateString("en-GB")`.
+- `sonner.tsx` — must have `"use client"` at the top.
+
+### Fonts
+
+Every font the picker offers must be loaded in `app/layout.tsx` with a matching `--font-*`
+variable name. The CSS variable name must match the `family` string in `src/registry/options.ts`.
+If mismatched, `--font-sans` becomes invalid at computed-value time and the font silently
+disappears. `buildPayload` rewrites font stacks to literal family names for export.
+
+---
+
+## 4. How to search for things
+
+| "I want to find…" | Where to look |
+|---|---|
+| A specific CSS variable (`--primary`, `--background`, etc.) | `src/registry/base-colors.ts` (per base color) or `app/globals.css` |
+| Where a token gets written to the DOM | `src/components/create/theme-scope.tsx` → `buildCss()` |
+| A specific picker's options | `src/registry/options.ts` or `accents.ts` / `styles.ts` / `chart-palettes.ts` |
+| Where `DesignSystemConfig` fields are defined | `src/registry/types.ts` |
+| Where state dispatch actions are | `src/components/create/use-design-system.tsx` → `reducer()` |
+| The export output format | `src/components/create/build-payload.ts` → `buildPayload()` |
+| localStorage key names | `use-design-system.tsx` (`create-state`) + `use-saved-designs.tsx` (`saved-designs`) |
+| Shadcn component manifest | `src/components/ui/_registry.ts` |
+| Knowledge graph queries | `graphify query "<question>"` or open `graphify-out/graph.html` |
+
+For structural questions ("what depends on X?", "where is Y defined?") prefer:
+```bash
+graphify query "<question>"
+```
+over grep. Re-run `/graphify` after major file changes.
+
+---
+
+## 5. Verification gate (mandatory before any "done" claim)
+
+Run from `website/`. All three must exit 0:
 
 ```bash
 npm run build     # next build — compile + tsc + static prerender
-npm run lint      # eslint — currently clean, 0 errors 0 warnings; keep it there
-npx tsc --noEmit  # standalone typecheck (redundant with build but fast feedback)
+npm run lint      # eslint — 0 errors 0 warnings; keep it there
+npx tsc --noEmit  # standalone typecheck (fast feedback)
 ```
 
-Build output in the success case: a `Route (app)` table with exactly four
-`○ (Static)` lines — `/_not-found`, `/create`, `/creates`, `/dashboard`.
+Expected build output: a `Route (app)` table with exactly four `○ (Static)` lines —
+`/_not-found`, `/create`, `/creates`, `/dashboard`.
 
 There is no `test` script. Don't add one.
 
-## Commands
+---
+
+## 6. Commands
 
 ```bash
+# From website/
 npm run dev       # next dev — http://localhost:3000
 npm run build     # production build (also runs tsc)
 npm run start     # serve the build output
 npm run lint      # eslint with eslint-config-next
+npx tsc --noEmit  # standalone typecheck
+npx shadcn add <name>  # add a new shadcn primitive
 ```
 
-No `format`, no `typecheck` script — `tsc --noEmit` is the typecheck path.
+---
 
-## Project layout — only what matters
+## 7. Critical rules
 
-- `app/` — `layout.tsx` (fonts + `globals.css` + `<Toaster />`),
-  `dashboard/page.tsx`, `create/page.tsx`, `creates/page.tsx`, `globals.css`,
-  `cn-luma.css`, `favicon.ico`. No `page.tsx` at the root.
-- `src/components/create/` — the customizer. `customizer.tsx` is the sidebar
-  shell, `setting-card.tsx` is the shared row primitive (and owns the lock
-  toggle), the `*-picker.tsx` files are the individual controls,
-  `use-design-system.tsx` holds the state, `theme-scope.tsx` injects the
-  resulting CSS variables, `showcase-block.tsx` is the previewed component
-  set, `build-payload.ts` generates the export, `get-code-dialog.tsx` is the
-  export UI, `registry-catalog.ts` flattens the shadcn manifest for the
-  component picker, and `use-saved-designs.tsx` is the localStorage store.
-- `src/components/creates/` — `design-gallery.tsx` and `saved-count.tsx`.
-- `src/registry/` — the design-token source of truth (`accents`,
-  `base-colors`, `chart-palettes`, `styles`, `options`, `types`), re-exported
-  through `src/registry/index.ts`.
-- `src/components/charts/` — 4 Recharts wrappers (`BarChart`, `DonutChart`,
-  `MiniBarChart`, `ProgressRing`).
-- `src/components/ui/` — shadcn primitives, plus `_registry.ts` (the upstream
-  manifest, now read by `registry-catalog.ts`) and `icon-placeholder.tsx`.
-  Add more with `npx shadcn add <name>`.
-- `src/lib/` — only `lucide-react.ts` and `stub-empty.ts`, both stub modules
-  wired in by `tsconfig.json` `paths`. Not application code.
-- `lib/utils.ts` — the only `cn()` helper. Use it; don't `clsx` raw.
+### Code rules
+1. **`buildThemeVars()` is the only config→CSS mapping.** Don't add a second one.
+2. **All colors in the preview come from CSS variables.** No hardcoded hex/rgb inside `showcase-block.tsx`. Sidebar chrome (`aside`) uses hardcoded hex intentionally — it is not themed.
+3. **Never `setState` inside an effect.** Use `useSyncExternalStore` for external stores.
+4. **Reducers must be pure.** `randomize` receives its random config as an action payload; `Math.random()` is called by the dispatch site, not inside the reducer.
+5. **`DesignSystemConfig` is the serialized shape.** Locks and picked-component list live *beside* it in the store envelope — never inside the config object. The preset codec and `build-payload` round-trip just the config.
+6. **`persist` is gated on `state.hydrated`.** Writing before the first localStorage read would clobber saved data with `DEFAULT_CONFIG`.
+7. **Use `next/link` for in-app navigation.** Raw `<a>` for internal routes is a regression.
+8. **Every font in the picker must be loaded in `app/layout.tsx`.** Missing font variable = silently broken font.
+9. **New UI primitives come from `npx shadcn add <name>` only.** Never hand-write into `src/components/ui/`.
+10. **Fixtures in `showcase-block.tsx` are module-level consts.** No `fetch`, no `Math.random()` — SSR and both mode copies must agree.
 
-## Conventions that differ from defaults
+### Lint / CSS rules
+- **Lint is clean — keep it zero.** `eslint.config.mjs` has two overrides: `^_`-prefix for unused bindings, and a relaxation for `src/lib/**` + `src/registry/**`. Don't widen those globs.
+- **`cn-luma.css` beats Tailwind utilities on portalled surfaces.** Never color a portal (dropdown, dialog) with hardcoded hex — it will lose its background while keeping text color, producing invisible content. Let the primitive take `bg-popover` / `text-popover-foreground` from its token.
+- **`app/globals.css` imports `shadcn/tailwind.css`** via `node_modules/shadcn/`. This is NOT a tsconfig alias. Don't remove it.
 
-1. **`showcase-block.tsx` is the only preview surface.** It renders every
-   primitive the theme touches, and `/create` mounts it twice — `mode="light"`
-   and `mode="dark"`. Anything added there must be visible in both. Ids inside
-   it are suffixed with `mode` (`email-${mode}`) because the block appears
-   twice on the page and duplicate ids would break every `htmlFor`.
-2. **Fixtures are deterministic module-level consts.** No `fetch`, no
-   `Math.random()` in render — the two copies must agree, and so must SSR.
-3. **Right chart primitive per shape.** Numeric percentage → `ProgressRing`
-   (`{ value, size, strokeWidth }`). Categorical shares → `DonutChart`.
-   Time-series bars → `BarChart`. Row-internal → `MiniBarChart`.
-   `AreaChart`, `LineChart`, and `Sparkline` no longer exist — the internal
-   `Chart` in `ui/chart.tsx` still supports `type="area"` and `type="line"`,
-   so route through it if you need those.
-4. **Routing uses `next/link`.** Raw `<a>` for in-app navigation is a
-   regression.
-5. **Every font the picker offers must be loaded in `app/layout.tsx`, under
-   the exact variable name `src/registry/options.ts` references.**
-   `--font-sans: var(--font-undefined), sans-serif` is invalid at
-   computed-value time, so the whole declaration is dropped and the font
-   silently vanishes — it does *not* fall back to the rest of the stack.
-   `build-payload.ts` therefore rewrites the stacks to literal family names
-   for export, since the consuming project has none of these variables.
-6. **`DesignSystemConfig` is the serialized shape.** Locks and the picked
-   component list live *beside* it in the store, not inside it — the preset
-   codec and `build-payload` both round-trip the config, and an extra field
-   corrupts them.
-7. **All colors come from CSS variables** defined in `app/globals.css`
-   (oklch tokens) and surfaced through the `@theme inline` block, then
-   overridden at runtime by `theme-scope.tsx`. Don't hardcode hex/rgb inside
-   the preview. (The customizer sidebar chrome is deliberate hardcoded hex —
-   it is not themed.)
-8. **`buildThemeVars()` in `build-payload.ts` is the single config → CSS
-   mapping.** `theme-scope.tsx` (live preview), the export, and the `/creates`
-   thumbnails all go through it. Don't add a second one.
-9. **Branching: feature branches off `main`, squash-merged.** Conventional
-   commits (`feat:`, `fix:`, `chore:`, …). No release branches; this is
-   not a published package.
+### Dependencies
+- **Don't bump majors opportunistically.** Next, React, shadcn, Tailwind major bumps are multi-day yak-shaves.
+- **No backend / no `fetch()` in the app.** Everything is localStorage. No server-side data.
+- **`next.config.ts` has no `images` block.** Adding a remote image requires `images.remotePatterns` back.
 
-## Pitfalls
+---
 
-- **Lint is clean — keep it clean.** `eslint.config.mjs` has exactly two
-  overrides: an `^_`-prefix ignore pattern for deliberately-unused bindings,
-  and a rule relaxation scoped to `src/lib/**` + `src/registry/**` (generated
-  stubs and loosely typed upstream token data). Don't widen those globs to
-  make new code pass.
-- **New UI primitives come from `npx shadcn add <name>`.** Never hand-write
-  a new component into `src/components/ui/`. The `components.json` manifest
-  (`baseColor: mist`, `style: base-luma`, `iconLibrary: tabler`) is the
-  source of truth.
-- **`app/globals.css` imports `shadcn/tailwind.css`** which resolves through
-  `node_modules/shadcn/` (the shadcn CLI's npm package). It is NOT a
-  tsconfig path alias. Don't remove the import without checking the render.
-- **`cn-luma.css` beats Tailwind utilities — never colour a portalled
-  surface with a hardcoded class.** `app/globals.css` imports
-  `shadcn/tailwind.css` *after* the utility layer, so a class like
-  `.cn-menu-translucent` (`@apply bg-popover/70`) or `.cn-dialog-content`
-  (`@apply bg-popover text-popover-foreground`) has equal specificity to
-  `bg-[#1f1f1f]` and wins on source order. A surface written as
-  `bg-[#1f1f1f] text-[#f2f2f2]` therefore loses its *background* to the light
-  popover token while keeping its near-white *text* — invisible content. The
-  customizer's Menu dropdown and Open Preset dialog both had this; they now
-  carry no colour classes and take `bg-popover` / `text-popover-foreground`
-  from the primitive. The sidebar chrome itself (`aside`, the Menu trigger) is
-  in-flow, not portalled, and its hardcoded hex is fine. `setting-card.tsx`
-  still forces `bg-white !text-zinc-900` on the picker menus — that works only
-  because of the `!`, and is worth converting to tokens next time it is
-  touched.
-- **`next.config.ts` has no `images` block any more.** It went with
-  `album-card`, the only `next/image` consumer. Adding a remote image needs
-  `images.remotePatterns` back, or `next/image` throws at runtime.
-- **Data is mock-first.** The showcase uses inline typed fixtures. Do not
-  introduce `fetch()` or backend integration without explicit owner approval.
-  Saved designs are localStorage only — there is no server.
-- **Never `setState` inside an effect.** `eslint-config-next` enables the
-  React Compiler's `react-hooks/set-state-in-effect` rule and it is an
-  *error*, not a warning. To read an external store, use
-  `useSyncExternalStore` (see `use-saved-designs.tsx`); to default a field
-  from props, compute it during render (see `save-design-dialog.tsx`).
-- **The store hydrates once, and `persist` is gated on `state.hydrated`.**
-  Both live in the reducer, not a ref: mount effects all run in the same
-  commit, so a ref set by the hydrate effect is already `true` when the
-  persist effect runs with the *pre-hydration* state — which silently wrote
-  `DEFAULT_CONFIG` over the user's saved theme. The hydrate effect is also
-  idempotent (it does not clear `?design=`; a second effect does that once
-  `state.hydrated` flips) because React double-invokes mount effects in dev.
-- **Reducers must be pure.** `randomize` takes the random config as its
-  action payload rather than calling `Math.random()` inside the reducer.
-- **`src/components/ui/calendar.tsx` diverges from upstream shadcn.**
-  `CalendarDayButton` pins `data-day` to `toLocaleDateString(locale?.code ??
-  "en-GB")`. With no argument the runtime default locale is used and Node and
-  the browser disagree on zero-padding (`26/7/2026` vs `26/07/2026`), which
-  React reported as a hydration mismatch on every day cell. Re-apply this
-  after any `npx shadcn add calendar`. The console is now clean — keep it
-  that way.
-- **`src/components/ui/sonner.tsx` needs its `"use client"` directive.** The
-  shadcn CLI writes it without one; it calls `useTheme`, and `app/layout.tsx`
-  is a server component. Re-add it after any `npx shadcn add sonner`. Without
-  `<Toaster />` mounted in the layout, every `toast.*` call in the app is a
-  silent no-op.
-- **Touching major versions** (Next, React, shadcn, Tailwind) is a
-  multi-day yak-shave. Don't bump majors opportunistically.
+## 8. Known pitfalls
 
-## Working style
+- **`calendar.tsx` hydration mismatch.** `CalendarDayButton` must pin `data-day` to
+  `toLocaleDateString("en-GB")`. Without it, Node and browser disagree on zero-padding and
+  React reports a mismatch on every day cell. Re-apply after any `npx shadcn add calendar`.
+- **`sonner.tsx` missing `"use client"`.** The shadcn CLI writes it without one; it calls
+  `useTheme`, and `app/layout.tsx` is a server component. Re-add after any `npx shadcn add sonner`.
+- **The store hydrates once; `persist` is gated on `state.hydrated`.** Both live in the
+  reducer. Mount effects all run in the same commit, so a ref set by the hydrate effect is
+  already `true` when the persist effect runs — which would silently write `DEFAULT_CONFIG`
+  over saved state. The hydrate effect is idempotent (React double-invokes in dev).
 
-When a task has more than one reasonable interpretation or the change
-could regress the page, **stop and ask**. Default to the smallest diff that
-satisfies the task; don't refactor adjacent code in passing.
+---
 
-## Scoped rules
+## 9. Scoped rules and skills
 
+**Scoped rules** (read before touching those directories):
 - `website/src/components/ui/` → `.claude/rules/ui-primitives.md`
 - `website/src/components/charts/` → `.claude/rules/charts.md`
 
-## Skills
+**Skills** (under `.claude/skills/<name>/SKILL.md`):
+- `shadcn` — shadcn component-library rules for this project.
+- `impeccable` — frontend design intelligence (dashboard mode).
+- `ponytail` — YAGNI / lazy-coding discipline.
+- `tailwind-v4` — Tailwind v4 + shadcn `base-luma` rules. Auto-loads when editing
+  `app/globals.css`, `components.json`, `postcss.config.mjs`, or anything in `src/components/ui/`.
 
-Four skills live under `.claude/skills/<name>/SKILL.md`:
+> Note: `shadcn`, `impeccable`, and `ponytail` ship with YAML frontmatter and `{{template}}`
+> references written for a different skill runtime — those won't resolve in Claude Code.
+> The rules text inside each file is usable as-is.
 
-- `shadcn` — component-library rules directly applicable to this project.
-- `impeccable` — frontend design intelligence (Operate mode = dashboard).
-- `ponytail` — general YAGNI / lazy-coding discipline.
-- `tailwind-v4` — Tailwind v4 + shadcn `base-luma` rules. Auto-loads when
-  editing `app/globals.css`, `components.json`, `postcss.config.mjs`, or
-  anything in `src/components/ui/`.
+---
 
-`shadcn`, `impeccable`, and `ponytail` ship with YAML frontmatter and
-inline `{{template}}` / sibling-file references written for a different
-skill runtime — those won't resolve in Claude Code. The rules text
-inside each file is usable.
+## 10. Knowledge graph
 
-## Knowledge graph
-
-`graphify-out/` holds a persistent knowledge graph of the codebase
-(structural AST edges + semantic doc edges + community detection).
+`graphify-out/` holds a persistent knowledge graph of the codebase.
 
 - `graph.json` — raw graph data, queryable via `graphify query "<question>"`.
 - `GRAPH_REPORT.md` — human-readable summary.
-- `graph.html` — interactive browser viz (open in any browser, no server).
+- `graph.html` — interactive browser visualization (open in any browser, no server needed).
 - `manifest.json` — incremental-update source of truth.
 - `cache/` + `cost.json` — per-user build artifacts (gitignored).
 
-When the user asks "what depends on X?", "where is Y defined?", or
-"trace the path between A and B", prefer `graphify query "<question>"`
-over grep. Re-run `/graphify` after major file changes to keep it fresh.
+When asked "what depends on X?", "where is Y defined?", or "trace the path from A to B",
+prefer `graphify query "<question>"` over grep. Re-run `/graphify` after major file changes.
+
+---
+
+## 11. Working style
+
+When a task has more than one reasonable interpretation or could regress the page,
+**stop and ask**. Default to the smallest diff that satisfies the task; don't refactor
+adjacent code in passing.
+
+Branching: feature branches off `main`, squash-merged. Conventional commits
+(`feat:`, `fix:`, `chore:`, …). No release branches — this is not a published package.

@@ -1,37 +1,88 @@
-import React from 'react';
-import * as TablerIcons from '@tabler/icons-react';
+"use client"
+
+import React from "react"
+import * as LucideIcons from "lucide-react"
+import * as TablerIcons from "@tabler/icons-react"
+import { useIconLibrary } from "@/components/create/icon-library-context"
+import { cn } from "@/lib/utils"
 
 interface IconPlaceholderProps extends React.SVGProps<SVGSVGElement> {
-  lucide?: string;
-  tabler?: string;
-  hugeicons?: string;
-  phosphor?: string;
-  remixicon?: string;
+  lucide?: string
+  tabler?: string
+  hugeicons?: string
+  phosphor?: string
+  remixicon?: string
+  iconLibrary?: string
 }
 
-// Only the tabler library is bundled; the other names are accepted so the
-// icon-library picker can round-trip them without leaking onto the <svg>.
+const lucideIcons = LucideIcons as unknown as Record<
+  string,
+  React.ComponentType<React.SVGProps<SVGSVGElement>> | undefined
+>
+
 const tablerIcons = TablerIcons as unknown as Record<
   string,
   React.ComponentType<React.SVGProps<SVGSVGElement>> | undefined
->;
+>
 
 export const IconPlaceholder: React.FC<IconPlaceholderProps> = ({
-  lucide: _lucide,
+  lucide,
   tabler,
-  hugeicons: _hugeicons,
-  phosphor: _phosphor,
-  remixicon: _remixicon,
+  hugeicons,
+  phosphor,
+  remixicon,
+  iconLibrary,
+  className,
   ...props
 }) => {
-  if (tabler) {
-    const IconComponent = tablerIcons[tabler];
-    if (IconComponent) {
-      return <IconComponent {...props} />;
+  const ctxLibrary = useIconLibrary()
+  const activeLibrary = iconLibrary ?? ctxLibrary ?? "tabler"
+
+  if (activeLibrary === "lucide" && lucide) {
+    const Component = lucideIcons[lucide]
+    if (Component) {
+      return <Component className={className} {...props} />
     }
   }
 
-  // Fallback icon if tabler icon is not found
+  if (activeLibrary === "tabler" && tabler) {
+    const Component = tablerIcons[tabler]
+    if (Component) {
+      return <Component className={className} {...props} />
+    }
+  }
+
+  if (activeLibrary === "hugeicons") {
+    const Component = (lucide && lucideIcons[lucide]) || (tabler && tablerIcons[tabler])
+    if (Component) {
+      return <Component className={cn("stroke-[1.5] [stroke-linecap:round]", className)} {...props} />
+    }
+  }
+
+  if (activeLibrary === "phosphor") {
+    const Component = (tabler && tablerIcons[tabler]) || (lucide && lucideIcons[lucide])
+    if (Component) {
+      return <Component className={cn("stroke-[2.25] [stroke-linecap:square]", className)} {...props} />
+    }
+  }
+
+  if (activeLibrary === "remixicon") {
+    const Component = (lucide && lucideIcons[lucide]) || (tabler && tablerIcons[tabler])
+    if (Component) {
+      return <Component className={cn("stroke-[1.75] [stroke-linejoin:miter]", className)} {...props} />
+    }
+  }
+
+  if (tabler && tablerIcons[tabler]) {
+    const Component = tablerIcons[tabler]!
+    return <Component className={className} {...props} />
+  }
+
+  if (lucide && lucideIcons[lucide]) {
+    const Component = lucideIcons[lucide]!
+    return <Component className={className} {...props} />
+  }
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -41,9 +92,10 @@ export const IconPlaceholder: React.FC<IconPlaceholderProps> = ({
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      className={className}
       {...props}
     >
       <rect width="18" height="18" x="3" y="3" rx="2" />
     </svg>
-  );
-};
+  )
+}

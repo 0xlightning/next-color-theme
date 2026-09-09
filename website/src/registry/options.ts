@@ -47,8 +47,11 @@ export const FONT_HEADING_OPTIONS: FontOption[] = [
 ]
 
 export const ICON_LIBRARIES: IconLibraryOption[] = [
-  { value: "tabler", label: "Tabler Icons" },
   { value: "lucide", label: "Lucide" },
+  { value: "tabler", label: "Tabler Icons" },
+  { value: "hugeicons", label: "HugeIcons" },
+  { value: "phosphor", label: "Phosphor Icons" },
+  { value: "remixicon", label: "Remix Icon" },
 ]
 
 /**

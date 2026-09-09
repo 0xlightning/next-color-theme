@@ -4,6 +4,7 @@ import * as React from "react"
 import type { DesignSystemConfig } from "@/registry/types"
 import { useDesignSystem } from "./use-design-system"
 import { buildThemeVars, formatVarBlock } from "./build-payload"
+import { IconLibraryProvider } from "./icon-library-context"
 
 const STYLE_ELEMENT_ID = "create-theme-vars"
 
@@ -59,17 +60,19 @@ export function ThemeScope({ children, mode, className }: ScopeProps) {
 
   const resolved = mode ?? state.mode
   return (
-    <div
-      className={[
-        "theme-scope",
-        resolved === "dark" ? "dark" : "",
-        className ?? "",
-      ]
-        .filter(Boolean)
-        .join(" ")}
-    >
-      {children}
-    </div>
+    <IconLibraryProvider iconLibrary={state.config.iconLibrary ?? "tabler"}>
+      <div
+        className={[
+          "theme-scope",
+          resolved === "dark" ? "dark" : "",
+          className ?? "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        {children}
+      </div>
+    </IconLibraryProvider>
   )
 }
 

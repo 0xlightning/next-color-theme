@@ -37,7 +37,10 @@ const RADIUS_CLASS_PATTERN = /\[--radius:([^\]]+)\]/
  */
 export function buildThemeVars(config: DesignSystemConfig): ThemeVars | null {
   const base = getBaseColor(config.baseColor)
-  const accent = getAccent(config.accent)
+  // Resolve accent from theme first — the Theme picker sets config.theme, and
+  // every ThemeName now has a matching entry in ACCENTS. Fall back to
+  // config.accent so saved designs that picked a separate accent still work.
+  const accent = getAccent(config.theme) ?? getAccent(config.accent)
   if (!base || !accent) {
     return null
   }

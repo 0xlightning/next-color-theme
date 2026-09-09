@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { toast } from "sonner"
-import { StaticThemeScope } from "@/components/create/theme-scope"
+import { StaticThemeScope } from "@/components/create/static-theme-scope"
 import {
   useSavedDesigns,
   type SavedDesign,
@@ -17,7 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { getFont, getLibrary, getStyle } from "@/registry"
+import { getFont, getLibrary, getStyle } from "@/registry/options"
 import { cn } from "@/lib/utils"
 
 const CHART_TOKENS = ["chart-1", "chart-2", "chart-3", "chart-4", "chart-5"]

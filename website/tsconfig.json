@@ -21,6 +21,7 @@
     "paths": {
       "@/*": ["./src/*", "./*"],
       "lucide-react": ["./src/lib/lucide-react"],
+      "@tabler/icons-react": ["./src/lib/stub-empty"],
       "@hugeicons/core-free-icons": ["./src/lib/stub-empty"],
       "@hugeicons/react": ["./src/lib/stub-empty"],
       "@streamdown/code": ["./src/lib/stub-empty"],

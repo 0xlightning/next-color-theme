@@ -44,7 +44,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { BarChart } from "@/components/charts/BarChart"
+import { AreaChart, BarChart } from "@/components/charts/BarChart"
 import { DonutChart } from "@/components/charts/DonutChart"
 import { MiniBarChart } from "@/components/charts/MiniBarChart"
 import { ProgressRing } from "@/components/charts/ProgressRing"
@@ -59,6 +59,16 @@ const REVENUE = [
   { month: "Apr", revenue: 4700, cost: 2600 },
   { month: "May", revenue: 6200, cost: 3100 },
   { month: "Jun", revenue: 5800, cost: 2900 },
+]
+
+const SLEEP = [
+  { day: "Mon", hours: 7.2, deep: 2.1 },
+  { day: "Tue", hours: 6.5, deep: 1.6 },
+  { day: "Wed", hours: 8.1, deep: 2.4 },
+  { day: "Thu", hours: 7.4, deep: 2.0 },
+  { day: "Fri", hours: 6.8, deep: 1.8 },
+  { day: "Sat", hours: 8.9, deep: 2.7 },
+  { day: "Sun", hours: 8.2, deep: 2.5 },
 ]
 
 const SEGMENTS = [
@@ -152,6 +162,104 @@ export function ShowcaseBlock({ mode }: { mode: "light" | "dark" }) {
       </CardHeader>
 
       <CardContent className="flex flex-col gap-6">
+        <Section title="Color Palette">
+          <div className="flex flex-col gap-3">
+            {/* Semantic swatches */}
+            <div>
+              <p className="mb-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+                Theme Colors
+              </p>
+              <div className="flex flex-wrap gap-2.5">
+                {[
+                  { label: "Primary", variable: "--primary", color: "var(--primary)" },
+                  { label: "Background", variable: "--background", color: "var(--background)" },
+                  { label: "Card", variable: "--card", color: "var(--card)" },
+                  { label: "Muted", variable: "--muted", color: "var(--muted)" },
+                  { label: "Border", variable: "--border", color: "var(--border)" },
+                  { label: "Destructive", variable: "--destructive", color: "var(--destructive)" },
+                ].map(({ label, variable, color }) => (
+                  <div key={variable} className="flex flex-col items-center gap-1" title={variable}>
+                    <div
+                      className="h-8 w-8 rounded-lg border border-border shadow-xs ring-1 ring-inset ring-black/5 transition-transform hover:scale-105"
+                      style={{ background: color }}
+                    />
+                    <span className="text-[9px] font-medium text-muted-foreground">{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Chart color swatches */}
+            <div>
+              <p className="mb-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+                Chart Palette
+              </p>
+              <div className="flex flex-wrap gap-2.5">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <div key={n} className="flex flex-col items-center gap-1" title={`--chart-${n}`}>
+                    <div
+                      className="h-8 w-8 rounded-lg border border-border shadow-xs ring-1 ring-inset ring-black/5 transition-transform hover:scale-105"
+                      style={{ background: `var(--chart-${n})` }}
+                    />
+                    <span className="text-[9px] font-medium text-muted-foreground">Chart {n}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Section>
+
+        <Separator />
+
+        <Section title="Icons">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+                Live Icon Library
+              </p>
+              <Badge variant="outline" className="text-[10px] capitalize">
+                {state.iconLibrary ?? "tabler"}
+              </Badge>
+            </div>
+            <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-muted/20 p-3">
+              {[
+                { name: "Home", tabler: "IconHome", lucide: "Home", hugeicons: "Home01Icon", phosphor: "HouseIcon", remixicon: "RiHomeLine" },
+                { name: "User", tabler: "IconUser", lucide: "User", hugeicons: "UserIcon", phosphor: "UserIcon", remixicon: "RiUserLine" },
+                { name: "Settings", tabler: "IconSettings", lucide: "Settings", hugeicons: "Settings01Icon", phosphor: "GearIcon", remixicon: "RiSettings3Line" },
+                { name: "Bell", tabler: "IconBell", lucide: "Bell", hugeicons: "Notification01Icon", phosphor: "BellIcon", remixicon: "RiNotification3Line" },
+                { name: "Search", tabler: "IconSearch", lucide: "Search", hugeicons: "Search01Icon", phosphor: "MagnifyingGlassIcon", remixicon: "RiSearchLine" },
+                { name: "Heart", tabler: "IconHeart", lucide: "Heart", hugeicons: "FavouriteIcon", phosphor: "HeartIcon", remixicon: "RiHeartLine" },
+                { name: "Star", tabler: "IconStar", lucide: "Star", hugeicons: "StarIcon", phosphor: "StarIcon", remixicon: "RiStarLine" },
+                { name: "Check", tabler: "IconCheck", lucide: "Check", hugeicons: "Tick01Icon", phosphor: "CheckIcon", remixicon: "RiCheckLine" },
+                { name: "Plus", tabler: "IconPlus", lucide: "Plus", hugeicons: "Add01Icon", phosphor: "PlusIcon", remixicon: "RiAddLine" },
+                { name: "Trash", tabler: "IconTrash", lucide: "Trash", hugeicons: "Delete01Icon", phosphor: "TrashIcon", remixicon: "RiDeleteBinLine" },
+                { name: "Mail", tabler: "IconMail", lucide: "Mail", hugeicons: "Mail01Icon", phosphor: "EnvelopeIcon", remixicon: "RiMailLine" },
+                { name: "Calendar", tabler: "IconCalendar", lucide: "Calendar", hugeicons: "Calendar01Icon", phosphor: "CalendarIcon", remixicon: "RiCalendarLine" },
+                { name: "Shield", tabler: "IconShield", lucide: "Shield", hugeicons: "Shield01Icon", phosphor: "ShieldIcon", remixicon: "RiShieldLine" },
+                { name: "Lock", tabler: "IconLock", lucide: "Lock", hugeicons: "Lock01Icon", phosphor: "LockIcon", remixicon: "RiLockLine" },
+              ].map(({ name, tabler, lucide, hugeicons, phosphor, remixicon }) => (
+                <div
+                  key={name}
+                  className="flex flex-col items-center gap-1 rounded-md p-1.5 transition-colors hover:bg-muted"
+                  title={name}
+                >
+                  <IconPlaceholder
+                    tabler={tabler}
+                    lucide={lucide}
+                    hugeicons={hugeicons}
+                    phosphor={phosphor}
+                    remixicon={remixicon}
+                    className="size-5 text-foreground"
+                  />
+                  <span className="text-[9px] text-muted-foreground">{name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Section>
+
+        <Separator />
+
         <Section title="Buttons">
           <div className="flex flex-wrap items-center gap-2">
             <Button>Primary</Button>
@@ -165,6 +273,7 @@ export function ShowcaseBlock({ mode }: { mode: "light" | "dark" }) {
             </Button>
           </div>
         </Section>
+
 
         <Separator />
 
@@ -259,14 +368,27 @@ export function ShowcaseBlock({ mode }: { mode: "light" | "dark" }) {
           <Tabs defaultValue="revenue">
             <TabsList>
               <TabsTrigger value="revenue">Revenue</TabsTrigger>
+              <TabsTrigger value="sleep">Sleep Report</TabsTrigger>
               <TabsTrigger value="split">Split</TabsTrigger>
               <TabsTrigger value="goals">Goals</TabsTrigger>
             </TabsList>
             <TabsContent value="revenue" className="pt-3">
-              <BarChart data={REVENUE} />
+              <BarChart data={REVENUE} className="h-32 [aspect-ratio:unset]" />
+            </TabsContent>
+            <TabsContent value="sleep" className="flex flex-col gap-2 pt-3 max-w-xs">
+              <div className="flex items-center justify-between px-1 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-foreground">7.6 hrs avg</span>
+                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                    92% Optimal
+                  </span>
+                </div>
+                <span className="text-[10px] text-muted-foreground">Mon – Sun</span>
+              </div>
+              <AreaChart data={SLEEP} className="h-32 [aspect-ratio:unset]" />
             </TabsContent>
             <TabsContent value="split" className="pt-3">
-              <DonutChart data={SEGMENTS} />
+              <DonutChart data={SEGMENTS} className="h-32 [aspect-ratio:unset]" />
             </TabsContent>
             <TabsContent
               value="goals"

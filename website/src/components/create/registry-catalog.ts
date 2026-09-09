@@ -1,5 +1,3 @@
-import { ui } from "@/components/ui/_registry"
-
 export type CatalogEntry = {
   name: string
   /** Other registry items shadcn pulls in automatically with this one. */
@@ -44,17 +42,301 @@ export const PRESENT_COMPONENTS: readonly string[] = [
   "tooltip",
 ]
 
+const REGISTRY_RAW = [
+  {
+    "name": "accordion",
+    "deps": []
+  },
+  {
+    "name": "alert",
+    "deps": []
+  },
+  {
+    "name": "alert-dialog",
+    "deps": [
+      "button"
+    ]
+  },
+  {
+    "name": "aspect-ratio",
+    "deps": []
+  },
+  {
+    "name": "avatar",
+    "deps": []
+  },
+  {
+    "name": "badge",
+    "deps": []
+  },
+  {
+    "name": "breadcrumb",
+    "deps": []
+  },
+  {
+    "name": "button",
+    "deps": []
+  },
+  {
+    "name": "button-group",
+    "deps": [
+      "separator"
+    ]
+  },
+  {
+    "name": "calendar",
+    "deps": [
+      "button"
+    ]
+  },
+  {
+    "name": "card",
+    "deps": []
+  },
+  {
+    "name": "carousel",
+    "deps": [
+      "button"
+    ]
+  },
+  {
+    "name": "chart",
+    "deps": [
+      "card"
+    ]
+  },
+  {
+    "name": "checkbox",
+    "deps": []
+  },
+  {
+    "name": "collapsible",
+    "deps": []
+  },
+  {
+    "name": "combobox",
+    "deps": [
+      "button",
+      "input-group"
+    ]
+  },
+  {
+    "name": "command",
+    "deps": [
+      "dialog",
+      "input-group"
+    ]
+  },
+  {
+    "name": "context-menu",
+    "deps": []
+  },
+  {
+    "name": "dialog",
+    "deps": [
+      "button"
+    ]
+  },
+  {
+    "name": "drawer",
+    "deps": []
+  },
+  {
+    "name": "dropdown-menu",
+    "deps": []
+  },
+  {
+    "name": "empty",
+    "deps": []
+  },
+  {
+    "name": "field",
+    "deps": [
+      "label",
+      "separator"
+    ]
+  },
+  {
+    "name": "form",
+    "deps": []
+  },
+  {
+    "name": "hover-card",
+    "deps": []
+  },
+  {
+    "name": "input",
+    "deps": []
+  },
+  {
+    "name": "input-group",
+    "deps": [
+      "button",
+      "input",
+      "textarea"
+    ]
+  },
+  {
+    "name": "input-otp",
+    "deps": []
+  },
+  {
+    "name": "item",
+    "deps": [
+      "separator"
+    ]
+  },
+  {
+    "name": "label",
+    "deps": []
+  },
+  {
+    "name": "menubar",
+    "deps": [
+      "dropdown-menu"
+    ]
+  },
+  {
+    "name": "navigation-menu",
+    "deps": []
+  },
+  {
+    "name": "pagination",
+    "deps": [
+      "button"
+    ]
+  },
+  {
+    "name": "popover",
+    "deps": []
+  },
+  {
+    "name": "progress",
+    "deps": []
+  },
+  {
+    "name": "radio-group",
+    "deps": []
+  },
+  {
+    "name": "resizable",
+    "deps": []
+  },
+  {
+    "name": "scroll-area",
+    "deps": []
+  },
+  {
+    "name": "select",
+    "deps": []
+  },
+  {
+    "name": "separator",
+    "deps": []
+  },
+  {
+    "name": "sheet",
+    "deps": [
+      "button"
+    ]
+  },
+  {
+    "name": "sidebar",
+    "deps": [
+      "button",
+      "input",
+      "separator",
+      "sheet",
+      "skeleton",
+      "tooltip",
+      "use-mobile"
+    ]
+  },
+  {
+    "name": "skeleton",
+    "deps": []
+  },
+  {
+    "name": "slider",
+    "deps": []
+  },
+  {
+    "name": "sonner",
+    "deps": []
+  },
+  {
+    "name": "spinner",
+    "deps": []
+  },
+  {
+    "name": "switch",
+    "deps": []
+  },
+  {
+    "name": "table",
+    "deps": []
+  },
+  {
+    "name": "tabs",
+    "deps": []
+  },
+  {
+    "name": "textarea",
+    "deps": []
+  },
+  {
+    "name": "toggle",
+    "deps": []
+  },
+  {
+    "name": "toggle-group",
+    "deps": [
+      "toggle"
+    ]
+  },
+  {
+    "name": "tooltip",
+    "deps": []
+  },
+  {
+    "name": "kbd",
+    "deps": []
+  },
+  {
+    "name": "native-select",
+    "deps": []
+  },
+  {
+    "name": "direction",
+    "deps": []
+  },
+  {
+    "name": "attachment",
+    "deps": [
+      "button"
+    ]
+  },
+  {
+    "name": "bubble",
+    "deps": []
+  },
+  {
+    "name": "marker",
+    "deps": []
+  },
+  {
+    "name": "message",
+    "deps": []
+  }
+] as const;
+
 /**
- * Flattened view of the generated `ui/_registry.ts` manifest — every shadcn
- * component the registry offers, not just the ones vendored here. That file
- * is generated and must not be hand-edited; this only reads it.
+ * Flattened view of the component catalog — every shadcn component offered.
  */
-export const CATALOG: readonly CatalogEntry[] = ui
+export const CATALOG: readonly CatalogEntry[] = REGISTRY_RAW
   .map((item) => ({
     name: item.name,
-    registryDependencies: (item.registryDependencies ?? []).filter(
-      (dep): dep is string => typeof dep === "string" && !dep.includes("/")
-    ),
+    registryDependencies: [...item.deps],
     present: PRESENT_COMPONENTS.includes(item.name),
   }))
   .sort((a, b) => a.name.localeCompare(b.name))

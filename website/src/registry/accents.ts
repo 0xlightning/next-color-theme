@@ -2,14 +2,26 @@ import type { Accent } from "./types"
 
 /**
  * Accent colors — applied via overrides on the active base color's
- * `--chart-1..5` and `--primary` slots. Each accent overrides primary +
- * chart-1 so the dashboard reads as tinted by this accent.
+ * `--primary` / `--accent` slots. Each accent overrides primary so the
+ * dashboard reads as tinted by the chosen theme colour.
+ *
+ * Names mirror `ThemeName` from types.ts so `getAccent(config.theme)` works
+ * directly in `buildThemeVars`, fixing the live-preview not reacting to the
+ * Theme picker. The legacy `"default"` entry is kept for backwards compat with
+ * saved designs that still carry `accent: "default"`.
  */
 export const ACCENTS: Accent[] = [
   {
     name: "default",
     label: "Default",
     swatch: "#525252",
+    primary: "oklch(0.205 0 0)",
+    primaryForeground: "oklch(0.985 0 0)",
+  },
+  {
+    name: "neutral",
+    label: "Neutral",
+    swatch: "#9ca3af",
     primary: "oklch(0.205 0 0)",
     primaryForeground: "oklch(0.985 0 0)",
   },
@@ -47,6 +59,20 @@ export const ACCENTS: Accent[] = [
     swatch: "#e11d48",
     primary: "oklch(0.586 0.232 17.585)",
     primaryForeground: "oklch(0.969 0.015 12.422)",
+  },
+  {
+    name: "cyan",
+    label: "Cyan",
+    swatch: "#0891b2",
+    primary: "oklch(0.662 0.155 204.933)",
+    primaryForeground: "oklch(0.975 0.011 202.046)",
+  },
+  {
+    name: "lime",
+    label: "Lime",
+    swatch: "#65a30d",
+    primary: "oklch(0.702 0.177 101.444)",
+    primaryForeground: "oklch(0.978 0.015 101.465)",
   },
 ]
 
