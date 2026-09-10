@@ -60,7 +60,7 @@ export function ThemeScope({ children, mode, className }: ScopeProps) {
 
   const resolved = mode ?? state.mode
   return (
-    <IconLibraryProvider iconLibrary={state.config.iconLibrary ?? "tabler"}>
+    <IconLibraryProvider iconLibrary={state.iconLibrary ?? "tabler"}>
       <div
         className={[
           "theme-scope",

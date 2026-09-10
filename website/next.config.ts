@@ -13,8 +13,7 @@ const nextConfig: NextConfig = {
     const existing = config.resolve?.alias as Record<string, string | unknown> | undefined
     const aliases: Record<string, string> = {
       ...(existing ?? {}),
-      "lucide-react": lucideStub,
-      "@tabler/icons-react": stubEmpty,
+      // "lucide-react" and "@tabler/icons-react" are installed packages, do not alias to stubs
       "@hugeicons/core-free-icons": stubEmpty,
       "@hugeicons/react": stubEmpty,
       "@streamdown/code": stubEmpty,

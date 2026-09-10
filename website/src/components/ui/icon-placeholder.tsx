@@ -25,6 +25,17 @@ const tablerIcons = TablerIcons as unknown as Record<
   React.ComponentType<React.SVGProps<SVGSVGElement>> | undefined
 >
 
+const getTablerIcon = (name?: string) => {
+  if (!name) return undefined
+  return tablerIcons[name] || tablerIcons[`Icon${name}`] || tablerIcons[name.replace(/^Icon/, "")]
+}
+
+const getLucideIcon = (name?: string) => {
+  if (!name) return undefined
+  const formatted = name.charAt(0).toUpperCase() + name.slice(1)
+  return lucideIcons[name] || lucideIcons[formatted] || lucideIcons[name.replace(/^Icon/, "")]
+}
+
 export const IconPlaceholder: React.FC<IconPlaceholderProps> = ({
   lucide,
   tabler,
@@ -39,48 +50,43 @@ export const IconPlaceholder: React.FC<IconPlaceholderProps> = ({
   const activeLibrary = iconLibrary ?? ctxLibrary ?? "tabler"
 
   if (activeLibrary === "lucide" && lucide) {
-    const Component = lucideIcons[lucide]
+    const Component = getLucideIcon(lucide)
     if (Component) {
       return <Component className={className} {...props} />
     }
   }
 
   if (activeLibrary === "tabler" && tabler) {
-    const Component = tablerIcons[tabler]
+    const Component = getTablerIcon(tabler)
     if (Component) {
       return <Component className={className} {...props} />
     }
   }
 
   if (activeLibrary === "hugeicons") {
-    const Component = (lucide && lucideIcons[lucide]) || (tabler && tablerIcons[tabler])
+    const Component = getLucideIcon(lucide) || getTablerIcon(tabler)
     if (Component) {
       return <Component className={cn("stroke-[1.5] [stroke-linecap:round]", className)} {...props} />
     }
   }
 
   if (activeLibrary === "phosphor") {
-    const Component = (tabler && tablerIcons[tabler]) || (lucide && lucideIcons[lucide])
+    const Component = getTablerIcon(tabler) || getLucideIcon(lucide)
     if (Component) {
       return <Component className={cn("stroke-[2.25] [stroke-linecap:square]", className)} {...props} />
     }
   }
 
   if (activeLibrary === "remixicon") {
-    const Component = (lucide && lucideIcons[lucide]) || (tabler && tablerIcons[tabler])
+    const Component = getLucideIcon(lucide) || getTablerIcon(tabler)
     if (Component) {
       return <Component className={cn("stroke-[1.75] [stroke-linejoin:miter]", className)} {...props} />
     }
   }
 
-  if (tabler && tablerIcons[tabler]) {
-    const Component = tablerIcons[tabler]!
-    return <Component className={className} {...props} />
-  }
-
-  if (lucide && lucideIcons[lucide]) {
-    const Component = lucideIcons[lucide]!
-    return <Component className={className} {...props} />
+  const FallbackComp = getTablerIcon(tabler) || getLucideIcon(lucide)
+  if (FallbackComp) {
+    return <FallbackComp className={className} {...props} />
   }
 
   return (

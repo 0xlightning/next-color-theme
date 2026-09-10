@@ -17,7 +17,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { getFont, getLibrary, getStyle } from "@/registry/options"
+import { getFont, getLibrary } from "@/registry/options"
+import { getStyle } from "@/registry/styles"
 import { cn } from "@/lib/utils"
 
 const CHART_TOKENS = ["chart-1", "chart-2", "chart-3", "chart-4", "chart-5"]

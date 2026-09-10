@@ -6,7 +6,26 @@ import * as Tabler from "@tabler/icons-react";
 
 type IconComp = React.ComponentType<any>;
 
-const fallback: IconComp = (() => null) as unknown as IconComp;
+const fallback: IconComp = React.forwardRef<SVGSVGElement, any>((props, ref) =>
+  React.createElement(
+    "svg",
+    {
+      ref,
+      xmlns: "http://www.w3.org/2000/svg",
+      width: "24",
+      height: "24",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+      ...props,
+    },
+    React.createElement("circle", { cx: "12", cy: "12", r: "9" }),
+    React.createElement("path", { d: "M12 8v4l2 2" })
+  )
+) as unknown as IconComp;
 const get = (k: string): IconComp => {
   const t = Tabler as unknown as Record<string, IconComp | undefined>;
   if (t[k]) return t[k]!;
