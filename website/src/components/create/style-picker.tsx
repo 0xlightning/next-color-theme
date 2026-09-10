@@ -19,7 +19,16 @@ export function StylePicker() {
         value: style.name,
         label: style.label,
       }))}
-      onChange={(value) => set({ style: value })}
+      onChange={(value) => {
+        // A style is a preset: seed its fonts onto the config so the pickers
+        // stay the single authority and a later pick always wins.
+        const next = STYLES.find((style) => style.name === value)
+        set(
+          next
+            ? { style: value, font: next.font, fontHeading: next.fontHeading ?? "inherit" }
+            : { style: value }
+        )
+      }}
     />
   )
 }

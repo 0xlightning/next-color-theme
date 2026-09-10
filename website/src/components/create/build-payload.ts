@@ -79,10 +79,12 @@ export function buildThemeVars(config: DesignSystemConfig): ThemeVars {
       (palette?.swatches ?? []).map((swatch, i) => [`chart-${i + 1}`, swatch])
     ),
     "font-sans": font?.family ?? "var(--font-geist-sans), system-ui, sans-serif",
+    // The config is the only authority: a style seeds these values at
+    // selection time (style-picker.tsx) rather than overriding them here,
+    // which is what used to make the Heading picker inert for lyra/rhea/sera
+    // and make the preview disagree with the export.
     "font-heading":
-      style?.headingFontFamily ??
-      headingFont?.family ??
-      "var(--font-heading), inherit",
+      headingFont?.family ?? font?.family ?? "var(--font-heading), inherit",
     radius,
   }
 

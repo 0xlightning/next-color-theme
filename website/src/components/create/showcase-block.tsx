@@ -135,10 +135,11 @@ export function ShowcaseBlock({ mode }: { mode: "light" | "dark" }) {
         <Badge variant="secondary" className="mb-2">
           {mode === "dark" ? "Dark" : "Light"}
         </Badge>
-        <CardTitle
-          className="text-2xl"
-          style={{ fontFamily: headingFont?.family ?? "inherit" }}
-        >
+        {/* No inline fontFamily: CardTitle carries the `font-heading`
+            utility, which resolves --font-heading from this scope. If the
+            heading face stops following the picker, that token path is the
+            thing that broke. */}
+        <CardTitle className="text-2xl">
           The quick brown fox jumps
         </CardTitle>
         <CardDescription

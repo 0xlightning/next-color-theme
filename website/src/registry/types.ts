@@ -33,10 +33,17 @@ export type Style = {
   name: string
   label: string
   description: string
-  /** Font family used for body */
-  fontFamily: string
-  /** Font family used for headings; undefined means inherit body */
-  headingFontFamily?: string
+  /**
+   * Fonts the style seeds into the config when it is selected. They are
+   * registry font *values*, not family strings: picking a style dispatches
+   * them onto `config.font` / `config.fontHeading`, so the font pickers stay
+   * the single authority and a later pick always wins. Styles used to carry
+   * raw family strings that `build-payload` layered on top of the config,
+   * which silently made the Heading picker inert for lyra/rhea/sera.
+   */
+  font: FontValue
+  /** Omitted means the style does not opinionate the heading. */
+  fontHeading?: FontValue | "inherit"
   /** Tailwind classes layered onto the .theme-scope wrapper */
   wrapperClassName?: string
 }
