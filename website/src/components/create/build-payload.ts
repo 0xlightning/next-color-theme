@@ -1,5 +1,7 @@
 import type { DesignSystemConfig } from "@/registry/types"
 import {
+  ACCENTS,
+  BASE_COLORS,
   getBaseColor,
   getAccent,
   resolveRadiusValue,
@@ -27,6 +29,11 @@ export type ThemeVars = {
  *  `wrapperClassName`. Styles use it to override the radius scale wholesale. */
 const RADIUS_CLASS_PATTERN = /\[--radius:([^\]]+)\]/
 
+/** Token floor for buildThemeVars — mirrors DEFAULT_CONFIG's base and theme.
+ *  BASE_COLORS[0] / ACCENTS[0] would drift if the arrays were reordered. */
+const FALLBACK_BASE_COLOR = getBaseColor("mist") ?? BASE_COLORS[0]
+const FALLBACK_ACCENT = getAccent("cyan") ?? ACCENTS[0]
+
 /**
  * The single source of truth for "config → CSS custom properties".
  *
@@ -35,15 +42,19 @@ const RADIUS_CLASS_PATTERN = /\[--radius:([^\]]+)\]/
  * overrides `--primary` / `--accent` on top of the base color in both modes;
  * chart swatches and typography are mode-agnostic.
  */
-export function buildThemeVars(config: DesignSystemConfig): ThemeVars | null {
-  const base = getBaseColor(config.baseColor)
+export function buildThemeVars(config: DesignSystemConfig): ThemeVars {
+  // Total by construction: every lookup falls back to a default token, so no
+  // caller has to handle a null. They used to, and both branches were wrong —
+  // buildPayload() threw mid-render (a white screen, since the Get Code dialog
+  // is mounted unconditionally) and buildCss() returned "", blanking every
+  // preview token. sanitizeConfig() makes these fallbacks unreachable for
+  // stored configs; they stay as a floor for programmatic callers.
+  const base = getBaseColor(config.baseColor) ?? FALLBACK_BASE_COLOR
   // Resolve accent from theme first — the Theme picker sets config.theme, and
   // every ThemeName now has a matching entry in ACCENTS. Fall back to
   // config.accent so saved designs that picked a separate accent still work.
-  const accent = getAccent(config.theme) ?? getAccent(config.accent)
-  if (!base || !accent) {
-    return null
-  }
+  const accent =
+    getAccent(config.theme) ?? getAccent(config.accent) ?? FALLBACK_ACCENT
 
   const style = getStyle(config.style)
   const font = getFont(config.font)
@@ -165,11 +176,6 @@ export function buildPayload(
   components: readonly string[] = []
 ): Payload {
   const vars = buildThemeVars(config)
-  if (!vars) {
-    throw new Error(
-      `Unknown base color "${config.baseColor}" or accent "${config.accent}"`
-    )
-  }
 
   const bodyFont = getFont(config.font)
   const headingFont =
@@ -279,4 +285,32 @@ ${payload.globalsCss}
 
 /* ---- install ---- */
 ${payload.installCommand}`
+}
+
+/** DOM id of the single <style> element that carries the preview tokens. */
+export const THEME_STYLE_ELEMENT_ID = "create-theme-vars"
+
+
+/**
+ * The preview's CSS lives under `.theme-scope` rather than `:root` so the
+ * customizer chrome around it keeps its own colors. Both mode blocks are
+ * always emitted — `/create` renders a light scope and a dark scope side by
+ * side, so both have to be live at once.
+ *
+ * Lives here, next to `buildThemeVars`, because it is a formatter over the
+ * same mapping: `DesignSystemProvider` needs it, and so does the paint-cache
+ * replay in `app/layout.tsx`.
+ */
+export function buildThemeCss(config: DesignSystemConfig): string {
+  const vars = buildThemeVars(config)
+  return [
+    ".theme-scope {",
+    "  color-scheme: light;",
+    formatVarBlock({ ...vars.light, ...vars.shared }, "  "),
+    "}",
+    ".theme-scope.dark {",
+    "  color-scheme: dark;",
+    formatVarBlock(vars.dark, "  "),
+    "}",
+  ].join("\n")
 }

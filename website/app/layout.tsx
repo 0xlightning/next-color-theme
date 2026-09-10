@@ -27,6 +27,33 @@ export const metadata: Metadata = {
   description: "Live theme customizer for the shadcn dashboard preview.",
 };
 
+/**
+ * Replays the preview's token CSS before first paint.
+ *
+ * The customizer's config lives in localStorage, so a statically prerendered
+ * page cannot know it — without this, a returning user paints the default
+ * theme first and their own theme one frame later. `persist()` in
+ * use-design-system.tsx caches the already-built CSS beside the config, and
+ * this script only copies that string into a <style>. It carries no token
+ * knowledge of its own, so buildThemeVars() stays the single config->CSS
+ * mapping.
+ *
+ * Runs on every route. On /dashboard and /creates the rules match nothing,
+ * which is cheaper than gating on a pathname.
+ */
+const PAINT_CACHE_SCRIPT = `
+try {
+  var raw = localStorage.getItem("next-color-theme:create-state");
+  var css = raw && JSON.parse(raw).css;
+  if (css) {
+    var el = document.createElement("style");
+    el.id = "create-theme-vars";
+    el.textContent = css;
+    document.head.appendChild(el);
+  }
+} catch (e) {}
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -35,6 +62,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={cn(
         "h-full",
         "antialiased",
@@ -47,6 +75,9 @@ export default function RootLayout({
         ebGaramond.variable
       )}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: PAINT_CACHE_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col">
         {children}
         <Toaster />

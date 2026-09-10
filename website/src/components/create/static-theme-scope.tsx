@@ -18,9 +18,6 @@ export function StaticThemeScope({
   children,
 }: ScopeProps) {
   const vars = React.useMemo(() => buildThemeVars(config), [config])
-  if (!vars) {
-    return null
-  }
   const style = Object.fromEntries(
     Object.entries({
       ...(mode === "dark" ? vars.dark : vars.light),

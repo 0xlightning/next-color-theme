@@ -21,6 +21,7 @@ import {
   type FontValue,
   type Mode,
 } from "@/registry/types"
+import { buildThemeCss, THEME_STYLE_ELEMENT_ID } from "./build-payload"
 import { PRESENT_COMPONENTS } from "./registry-catalog"
 import { findSavedDesign } from "./use-saved-designs"
 
@@ -214,7 +215,18 @@ function persist(state: EditorState) {
     const { config, locks, components } = state
     window.localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ config, locks, components })
+      JSON.stringify({
+        config,
+        locks,
+        components,
+        // Derived paint cache, stored beside the config the way locks and
+        // components are — never inside it. The blocking script in
+        // app/layout.tsx replays this before first paint so a returning
+        // user's theme is correct on frame one instead of flashing the
+        // defaults. Regenerated from buildThemeVars on every write, so it
+        // cannot drift from the config it sits next to.
+        css: buildThemeCss(config),
+      })
     )
   } catch {
     // localStorage may be unavailable (private mode); silently skip
@@ -274,6 +286,39 @@ export function DesignSystemProvider({
     }
     persist(state)
   }, [state])
+
+  const css = React.useMemo(
+    () => buildThemeCss(state.config),
+    [state.config]
+  )
+
+  // One owner for the preview tokens. `/create` mounts two ThemeScopes and
+  // they used to race for this same global id with a no-op cleanup, which
+  // also left the rules behind in <head> after navigating away.
+  //
+  // Gated on `hydrated` for the same reason `persist` is: before the storage
+  // read lands, `css` is still DEFAULT_CONFIG's. Writing it would paint over
+  // the cache that the pre-paint script in app/layout.tsx just installed and
+  // reintroduce exactly the flash that script exists to remove. Until then
+  // the scope falls through to the `:root` block in globals.css, which is the
+  // same token set as DEFAULT_CONFIG.
+  React.useLayoutEffect(() => {
+    if (!state.hydrated) {
+      return
+    }
+    let element = document.getElementById(
+      THEME_STYLE_ELEMENT_ID
+    ) as HTMLStyleElement | null
+    if (!element) {
+      element = document.createElement("style")
+      element.id = THEME_STYLE_ELEMENT_ID
+      document.head.appendChild(element)
+    }
+    element.textContent = css
+    return () => {
+      element?.remove()
+    }
+  }, [css, state.hydrated])
 
   const store = React.useMemo<Store>(
     () => ({

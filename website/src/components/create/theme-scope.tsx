@@ -1,35 +1,8 @@
 "use client"
 
 import * as React from "react"
-import type { DesignSystemConfig } from "@/registry/types"
 import { useDesignSystem } from "./use-design-system"
-import { buildThemeVars, formatVarBlock } from "./build-payload"
 import { IconLibraryProvider } from "./icon-library-context"
-
-const STYLE_ELEMENT_ID = "create-theme-vars"
-
-/**
- * The preview's CSS lives under `.theme-scope` rather than `:root` so the
- * customizer chrome around it keeps its own colors. Both mode blocks are
- * always emitted — `/create` renders a light scope and a dark scope side by
- * side, so both have to be live at once.
- */
-function buildCss(config: DesignSystemConfig): string {
-  const vars = buildThemeVars(config)
-  if (!vars) {
-    return ""
-  }
-  return [
-    ".theme-scope {",
-    "  color-scheme: light;",
-    formatVarBlock({ ...vars.light, ...vars.shared }, "  "),
-    "}",
-    ".theme-scope.dark {",
-    "  color-scheme: dark;",
-    formatVarBlock(vars.dark, "  "),
-    "}",
-  ].join("\n")
-}
 
 type ScopeProps = {
   children: React.ReactNode
@@ -38,32 +11,31 @@ type ScopeProps = {
   className?: string
 }
 
+/**
+ * Marks a subtree as the themed preview surface.
+ *
+ * The `.theme-scope` custom properties themselves are written once by
+ * `DesignSystemProvider` (see `use-design-system.tsx`) — two scopes render
+ * side by side on `/create` and they must not both own one global <style>
+ * element. This component is presentational: the wrapper class, the mode
+ * flag, and the icon-library context the preview's icons read.
+ *
+ * `font-sans` is applied here on purpose. The wrapper redeclares
+ * `--font-sans`, but every descendant inherits its *computed* font-family
+ * from `html`/`body`, which resolved the variable at the root and outside
+ * this scope. Re-applying the utility on the wrapper re-resolves it against
+ * the scope's own value, which is what makes the Font picker visible.
+ */
 export function ThemeScope({ children, mode, className }: ScopeProps) {
   const { state } = useDesignSystem()
-  const css = React.useMemo(() => buildCss(state), [state])
-
-  // Inject <style id="create-theme-vars"> synchronously to avoid flash.
-  React.useLayoutEffect(() => {
-    let element = document.getElementById(
-      STYLE_ELEMENT_ID
-    ) as HTMLStyleElement | null
-    if (!element) {
-      element = document.createElement("style")
-      element.id = STYLE_ELEMENT_ID
-      document.head.appendChild(element)
-    }
-    element.textContent = css
-    return () => {
-      // Element is shared across navigation; keep it in place.
-    }
-  }, [css])
-
   const resolved = mode ?? state.mode
+
   return (
     <IconLibraryProvider iconLibrary={state.iconLibrary ?? "tabler"}>
       <div
         className={[
           "theme-scope",
+          "font-sans",
           resolved === "dark" ? "dark" : "",
           className ?? "",
         ]
@@ -73,48 +45,5 @@ export function ThemeScope({ children, mode, className }: ScopeProps) {
         {children}
       </div>
     </IconLibraryProvider>
-  )
-}
-
-/**
- * Same token emission, but scoped to an arbitrary selector and driven by a
- * config that is *not* the live one. `/creates` uses this to paint each saved
- * design's thumbnail in its own colors.
- */
-export function StaticThemeScope({
-  config,
-  mode = "light",
-  className,
-  children,
-}: {
-  config: DesignSystemConfig
-  mode?: "light" | "dark"
-  className?: string
-  children: React.ReactNode
-}) {
-  const vars = React.useMemo(() => buildThemeVars(config), [config])
-  if (!vars) {
-    return null
-  }
-  // Inline styles, not a <style> tag: the token names are runtime data, so
-  // they cannot be Tailwind classes, and each card needs its own values.
-  const style = Object.fromEntries(
-    Object.entries({
-      ...(mode === "dark" ? vars.dark : vars.light),
-      ...vars.shared,
-    })
-      .filter(([, value]) => Boolean(value))
-      .map(([key, value]) => [`--${key}`, value])
-  ) as React.CSSProperties
-
-  return (
-    <div
-      className={[mode === "dark" ? "dark" : "", className ?? ""]
-        .filter(Boolean)
-        .join(" ")}
-      style={{ ...style, colorScheme: mode }}
-    >
-      {children}
-    </div>
   )
 }
