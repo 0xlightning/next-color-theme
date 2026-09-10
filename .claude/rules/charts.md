@@ -107,13 +107,11 @@ type ProgressRingProps = {
 
 ## Don't
 
-- ❌ Don't import `recharts` directly into a widget. Use the wrappers.
-- ❌ Don't add a new wrapper unless the pattern appears ≥3 times. Reuse first.
-- ❌ Don't hardcode hex inside a chart wrapper. Use `var(--…)` tokens.
-- ❌ Don't pass `className` to `MiniBarChart` / `BarChart` / `DonutChart` —
-  they don't accept it.
-- ❌ Don't wrap a `ProgressRing` in a Recharts `<ChartContainer>` — it's
-  already `<svg>`-only.
+- Don't import `recharts` directly into a widget. Use the wrappers.
+- Don't add a new wrapper unless the pattern appears ≥3 times. Reuse first.
+- Don't hardcode hex inside a chart wrapper. Use `var(--…)` tokens.
+- Don't pass `className` to `MiniBarChart` / `BarChart` / `DonutChart` — they don't accept it.
+- Don't wrap a `ProgressRing` in a Recharts `<ChartContainer>` — it's already `<svg>`-only.
 
 ## Adding a new wrapper
 
