@@ -13,7 +13,7 @@ import {
 import { IconPlaceholder } from "@/components/ui/icon-placeholder"
 import type { DesignSystemConfig } from "@/registry/types"
 import { cn } from "@/lib/utils"
-import { useDesignSystem } from "./use-design-system"
+import { useDesignLocks, useDesignActions } from "./use-design-system"
 
 type Indicator = React.ReactNode
 
@@ -60,15 +60,15 @@ export function SettingCard({
   groups,
   onChange,
 }: SettingCardProps) {
-  const { locks, toggleLock } = useDesignSystem()
+  const locks = useDesignLocks()
+  const { toggleLock } = useDesignActions()
   const locked = Boolean(locks[field])
 
-  const flatOptions = React.useMemo(() => {
-    if (groups && groups.length > 0) {
-      return groups.flatMap((g) => g.options)
-    }
-    return options
-  }, [groups, options])
+  // Not memoized: every picker builds `options` / `groups` as fresh array
+  // literals each render, so the deps were always dirty and the memo only
+  // ever added work.
+  const flatOptions =
+    groups && groups.length > 0 ? groups.flatMap((g) => g.options) : options
 
   return (
     <div

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useDesignSystem } from "./use-design-system"
+import { useDesignConfig } from "./use-design-system"
 import { IconLibraryProvider } from "./icon-library-context"
 
 type ScopeProps = {
@@ -27,7 +27,7 @@ type ScopeProps = {
  * the scope's own value, which is what makes the Font picker visible.
  */
 export function ThemeScope({ children, mode, className }: ScopeProps) {
-  const { state } = useDesignSystem()
+  const state = useDesignConfig()
   const resolved = mode ?? state.mode
 
   return (

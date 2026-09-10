@@ -148,10 +148,8 @@ function reducer(state: EditorState, action: Action): EditorState {
   }
 }
 
-type Store = {
-  state: DesignSystemConfig
-  locks: Locks
-  components: string[]
+/** The dispatch-only half of the store. Stable for the provider's lifetime. */
+type Actions = {
   set: (next: Partial<DesignSystemConfig>) => void
   replace: (next: DesignSystemConfig) => void
   randomize: () => void
@@ -160,7 +158,28 @@ type Store = {
   setComponents: (next: string[]) => void
 }
 
-const DesignSystemContext = React.createContext<Store | null>(null)
+type Store = Actions & {
+  state: DesignSystemConfig
+  locks: Locks
+  components: string[]
+}
+
+/**
+ * Split by what changes, not by what's convenient.
+ *
+ * A single context value memoized on the whole editor state handed every
+ * consumer a new object on every dispatch — including `toggleLock` and
+ * `setComponents`, which change nothing visual. One lock click re-rendered
+ * all 11 SettingCards, both ThemeScopes and both ShowcaseBlocks (each a
+ * ~700-line tree with a Calendar and four Recharts wrappers).
+ *
+ * Now a lock click only invalidates `LocksContext`. `state.config` keeps its
+ * identity, so the preview does not re-render at all.
+ */
+const ConfigContext = React.createContext<DesignSystemConfig | null>(null)
+const LocksContext = React.createContext<Locks | null>(null)
+const ComponentsContext = React.createContext<string[] | null>(null)
+const ActionsContext = React.createContext<Actions | null>(null)
 
 /** Design ids already toasted, so dev double-invocation doesn't double-toast. */
 const announced = new Set<string>()
@@ -284,7 +303,11 @@ export function DesignSystemProvider({
     if (!state.hydrated) {
       return
     }
-    persist(state)
+    // Debounced: persist() stringifies the whole envelope and rebuilds the
+    // CSS cache, and the Get Code picker's "Select all" dispatches ~100
+    // component changes in one go. One write per burst is enough.
+    const timer = window.setTimeout(() => persist(state), 150)
+    return () => window.clearTimeout(timer)
   }, [state])
 
   const css = React.useMemo(
@@ -320,11 +343,9 @@ export function DesignSystemProvider({
     }
   }, [css, state.hydrated])
 
-  const store = React.useMemo<Store>(
+  // `dispatch` is stable, so the action bundle never needs rebuilding.
+  const actions = React.useMemo<Actions>(
     () => ({
-      state: state.config,
-      locks: state.locks,
-      components: state.components,
       set: (next) => dispatch({ type: "set", payload: next }),
       replace: (next) => dispatch({ type: "replace", payload: next }),
       randomize: () =>
@@ -334,20 +355,61 @@ export function DesignSystemProvider({
       setComponents: (next) =>
         dispatch({ type: "setComponents", payload: next }),
     }),
-    [state]
+    []
   )
 
   return (
-    <DesignSystemContext.Provider value={store}>
-      {children}
-    </DesignSystemContext.Provider>
+    <ActionsContext.Provider value={actions}>
+      <ConfigContext.Provider value={state.config}>
+        <LocksContext.Provider value={state.locks}>
+          <ComponentsContext.Provider value={state.components}>
+            {children}
+          </ComponentsContext.Provider>
+        </LocksContext.Provider>
+      </ConfigContext.Provider>
+    </ActionsContext.Provider>
   )
 }
 
-export function useDesignSystem(): Store {
-  const ctx = React.useContext(DesignSystemContext)
-  if (!ctx) {
-    throw new Error("useDesignSystem must be used within DesignSystemProvider")
+function useRequired<T>(context: React.Context<T | null>, hook: string): T {
+  const value = React.useContext(context)
+  if (value === null) {
+    throw new Error(`${hook} must be used within DesignSystemProvider`)
   }
-  return ctx
+  return value
+}
+
+/** Config only. Re-renders on config changes, not on lock/component churn. */
+export function useDesignConfig(): DesignSystemConfig {
+  return useRequired(ConfigContext, "useDesignConfig")
+}
+
+/** Dispatchers only. Never re-renders. */
+export function useDesignActions(): Actions {
+  return useRequired(ActionsContext, "useDesignActions")
+}
+
+export function useDesignLocks(): Locks {
+  return useRequired(LocksContext, "useDesignLocks")
+}
+
+export function useDesignComponents(): string[] {
+  return useRequired(ComponentsContext, "useDesignComponents")
+}
+
+/**
+ * Facade over all four contexts, kept so the pickers compile unchanged.
+ *
+ * Subscribing to everything means re-rendering on everything — prefer the
+ * narrow hooks above in anything expensive.
+ */
+export function useDesignSystem(): Store {
+  const state = useDesignConfig()
+  const locks = useDesignLocks()
+  const components = useDesignComponents()
+  const actions = useDesignActions()
+  return React.useMemo(
+    () => ({ state, locks, components, ...actions }),
+    [state, locks, components, actions]
+  )
 }

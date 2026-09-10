@@ -49,7 +49,7 @@ import { DonutChart } from "@/components/charts/DonutChart"
 import { MiniBarChart } from "@/components/charts/MiniBarChart"
 import { ProgressRing } from "@/components/charts/ProgressRing"
 import { getFont } from "@/registry"
-import { useDesignSystem } from "./use-design-system"
+import { useDesignConfig } from "./use-design-system"
 
 /** Deterministic fixtures — a static preview must render the same every time. */
 const REVENUE = [
@@ -116,7 +116,7 @@ function Section({
  * the moment the customizer changes.
  */
 export function ShowcaseBlock({ mode }: { mode: "light" | "dark" }) {
-  const { state } = useDesignSystem()
+  const state = useDesignConfig()
 
   const bodyFont = getFont(state.font)
   const headingFont =

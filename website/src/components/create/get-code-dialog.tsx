@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils"
 import { buildPayload } from "./build-payload"
 import { CATALOG, PRESENT_COMPONENTS, resolveDependencies } from "./registry-catalog"
 import { ActionButton } from "./setting-card"
-import { useDesignSystem } from "./use-design-system"
+import { useDesignConfig, useDesignComponents, useDesignActions } from "./use-design-system"
 
 async function copy(text: string, what: string) {
   try {
@@ -64,7 +64,9 @@ export function GetCodeDialog({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
-  const { state, components, setComponents } = useDesignSystem()
+  const state = useDesignConfig()
+  const components = useDesignComponents()
+  const { setComponents } = useDesignActions()
 
   const { all, implied } = React.useMemo(
     () => resolveDependencies(components),

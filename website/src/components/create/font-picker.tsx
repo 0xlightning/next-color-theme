@@ -27,7 +27,9 @@ export function FontPicker({ param }: Props) {
     : (fontOptions.find((font) => font.value === currentValue) ?? fontOptions[0])
 
   // Group fonts by type for the popover, mirroring shadcn's picker layout.
-  const groups = React.useMemo(() => {
+  // Not memoized: `current` is recomputed every render, so the deps never
+  // matched twice in a row.
+  const groups = (() => {
     const byType = new Map<string, FontOption[]>()
     for (const font of fontOptions) {
       const list = byType.get(font.type) ?? []
@@ -43,7 +45,7 @@ export function FontPicker({ param }: Props) {
           : font.label,
       })),
     }))
-  }, [fontOptions, inheritBodyFont, current])
+  })()
 
   return (
     <SettingCard
