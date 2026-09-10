@@ -22,7 +22,7 @@ export function MenuColorPicker() {
             tabler="IconAlignLeft"
             hugeicons="AlignLeftIcon"
             phosphor="AlignLeftIcon"
-            remixicon="RiAlignLeftLine"
+            remixicon="RiMenuLine"
           />
         </span>
       }

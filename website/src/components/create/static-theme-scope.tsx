@@ -3,6 +3,7 @@
 import * as React from "react"
 import type { DesignSystemConfig } from "@/registry/types"
 import { buildThemeVars, formatVarBlock } from "./build-payload"
+import { IconLibraryProvider } from "./icon-library-context"
 
 type ScopeProps = {
   config: DesignSystemConfig
@@ -34,7 +35,9 @@ export function StaticThemeScope({
         .join(" ")}
       style={{ ...style, colorScheme: mode }}
     >
-      {children}
+      <IconLibraryProvider iconLibrary={config.iconLibrary ?? "tabler"}>
+        {children}
+      </IconLibraryProvider>
     </div>
   )
 }

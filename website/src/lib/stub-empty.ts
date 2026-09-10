@@ -48,25 +48,30 @@ export const HugeiconsIcon: any = _any
 // pulling in thousands of SVG files during type-check / compilation.
 // ----
 type IconComp = React.ComponentType<any>
-const TablerFallback: IconComp = React.forwardRef<SVGSVGElement, any>((props, ref) =>
-  React.createElement(
-    "svg",
-    {
-      ref,
-      xmlns: "http://www.w3.org/2000/svg",
-      width: "24",
-      height: "24",
-      viewBox: "0 0 24 24",
-      fill: "none",
-      stroke: "currentColor",
-      strokeWidth: "2",
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      ...props,
-    },
-    React.createElement("circle", { cx: "12", cy: "12", r: "9" }),
-    React.createElement("path", { d: "M12 8v4l2 2" })
-  )
+// Named function expression, not an arrow: react/display-name needs a name it
+// can see, and this file is compiled but never bundled, so there is nothing to
+// gain from anonymity.
+const TablerFallback: IconComp = React.forwardRef<SVGSVGElement, any>(
+  function TablerFallback(props, ref) {
+    return React.createElement(
+      "svg",
+      {
+        ref,
+        xmlns: "http://www.w3.org/2000/svg",
+        width: "24",
+        height: "24",
+        viewBox: "0 0 24 24",
+        fill: "none",
+        stroke: "currentColor",
+        strokeWidth: "2",
+        strokeLinecap: "round",
+        strokeLinejoin: "round",
+        ...props,
+      },
+      React.createElement("circle", { cx: "12", cy: "12", r: "9" }),
+      React.createElement("path", { d: "M12 8v4l2 2" })
+    )
+  }
 ) as unknown as IconComp
 const _tablerProxy: Record<string, IconComp> = new Proxy(
   {} as Record<string, IconComp>,

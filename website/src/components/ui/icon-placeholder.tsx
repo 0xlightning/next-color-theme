@@ -1,10 +1,9 @@
 "use client"
 
 import React from "react"
-import * as LucideIcons from "lucide-react"
-import * as TablerIcons from "@tabler/icons-react"
 import { useIconLibrary } from "@/components/create/icon-library-context"
 import { cn } from "@/lib/utils"
+import { LIBRARY_CLASS, renderIcon } from "./icon-registry"
 
 interface IconPlaceholderProps extends React.SVGProps<SVGSVGElement> {
   lucide?: string
@@ -12,30 +11,24 @@ interface IconPlaceholderProps extends React.SVGProps<SVGSVGElement> {
   hugeicons?: string
   phosphor?: string
   remixicon?: string
+  /** Override the library from context. Used by the icon picker's preview. */
   iconLibrary?: string
 }
 
-const lucideIcons = LucideIcons as unknown as Record<
-  string,
-  React.ComponentType<React.SVGProps<SVGSVGElement>> | undefined
->
-
-const tablerIcons = TablerIcons as unknown as Record<
-  string,
-  React.ComponentType<React.SVGProps<SVGSVGElement>> | undefined
->
-
-const getTablerIcon = (name?: string) => {
-  if (!name) return undefined
-  return tablerIcons[name] || tablerIcons[`Icon${name}`] || tablerIcons[name.replace(/^Icon/, "")]
-}
-
-const getLucideIcon = (name?: string) => {
-  if (!name) return undefined
-  const formatted = name.charAt(0).toUpperCase() + name.slice(1)
-  return lucideIcons[name] || lucideIcons[formatted] || lucideIcons[name.replace(/^Icon/, "")]
-}
-
+/**
+ * Renders one glyph from whichever icon library the design system selects.
+ *
+ * Project-local, not a shadcn primitive. Each call site names the icon once
+ * per vendor because the vendors disagree — `IconCheck` / `Check` /
+ * `Tick02Icon` / `CheckIcon` / `RiCheckLine` are the same glyph. All five
+ * libraries are really installed; `icon-registry.tsx` holds the resolved
+ * components, imported by name so no barrel is pulled in.
+ *
+ * The resolution itself lives in `renderIcon`, a module-level function. It
+ * used to happen inline here, which meant the JSX element type was the return
+ * value of a call made during render — six eslint
+ * react-hooks/static-components errors.
+ */
 export const IconPlaceholder: React.FC<IconPlaceholderProps> = ({
   lucide,
   tabler,
@@ -49,46 +42,16 @@ export const IconPlaceholder: React.FC<IconPlaceholderProps> = ({
   const ctxLibrary = useIconLibrary()
   const activeLibrary = iconLibrary ?? ctxLibrary ?? "tabler"
 
-  if (activeLibrary === "lucide" && lucide) {
-    const Component = getLucideIcon(lucide)
-    if (Component) {
-      return <Component className={className} {...props} />
-    }
+  const icon = renderIcon(
+    activeLibrary,
+    { lucide, tabler, hugeicons, phosphor, remixicon },
+    { className: cn(LIBRARY_CLASS[activeLibrary], className), ...props }
+  )
+  if (icon) {
+    return icon
   }
 
-  if (activeLibrary === "tabler" && tabler) {
-    const Component = getTablerIcon(tabler)
-    if (Component) {
-      return <Component className={className} {...props} />
-    }
-  }
-
-  if (activeLibrary === "hugeicons") {
-    const Component = getLucideIcon(lucide) || getTablerIcon(tabler)
-    if (Component) {
-      return <Component className={cn("stroke-[1.5] [stroke-linecap:round]", className)} {...props} />
-    }
-  }
-
-  if (activeLibrary === "phosphor") {
-    const Component = getTablerIcon(tabler) || getLucideIcon(lucide)
-    if (Component) {
-      return <Component className={cn("stroke-[2.25] [stroke-linecap:square]", className)} {...props} />
-    }
-  }
-
-  if (activeLibrary === "remixicon") {
-    const Component = getLucideIcon(lucide) || getTablerIcon(tabler)
-    if (Component) {
-      return <Component className={cn("stroke-[1.75] [stroke-linejoin:miter]", className)} {...props} />
-    }
-  }
-
-  const FallbackComp = getTablerIcon(tabler) || getLucideIcon(lucide)
-  if (FallbackComp) {
-    return <FallbackComp className={className} {...props} />
-  }
-
+  // Nothing matched — a neutral placeholder beats a hole in the layout.
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

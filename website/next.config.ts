@@ -3,11 +3,9 @@ import type { NextConfig } from "next"
 
 // Packages that are imported by vendored shadcn/registry source but are not
 // installed. Both bundlers resolve them to a no-op stub module.
-// "lucide-react" and "@tabler/icons-react" are real installed packages —
-// deliberately absent from this list.
+// lucide-react, @tabler/icons-react, @hugeicons/*, @phosphor-icons/react and
+// @remixicon/react are all really installed — deliberately absent from this list.
 const STUBBED_MODULES = [
-  "@hugeicons/core-free-icons",
-  "@hugeicons/react",
   "@streamdown/code",
   "@tanstack/react-table",
   "@vercel/analytics/react",

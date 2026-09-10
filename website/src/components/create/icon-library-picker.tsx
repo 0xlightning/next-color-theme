@@ -20,9 +20,13 @@ export function IconLibraryPicker() {
       indicator={
         <span className="text-[#f2f2f2] [&_svg]:size-3.5 [&_svg]:text-[#f2f2f2]">
           <IconPlaceholder
+            // The sidebar is outside ThemeScope, so context is null and this
+            // would always draw Tabler. The preview glyph has to show the
+            // library it is offering.
+            iconLibrary={state.iconLibrary}
             lucide="Sparkles"
             tabler="IconSparkles"
-            hugeicons="MagicStickIcon"
+            hugeicons="MagicWand01Icon"
             phosphor="SparkleIcon"
             remixicon="RiSparklingLine"
           />

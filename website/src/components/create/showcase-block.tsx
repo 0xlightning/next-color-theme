@@ -237,7 +237,7 @@ export function ShowcaseBlock({ mode }: { mode: "light" | "dark" }) {
                 { name: "Mail", tabler: "IconMail", lucide: "Mail", hugeicons: "Mail01Icon", phosphor: "EnvelopeIcon", remixicon: "RiMailLine" },
                 { name: "Calendar", tabler: "IconCalendar", lucide: "Calendar", hugeicons: "Calendar01Icon", phosphor: "CalendarIcon", remixicon: "RiCalendarLine" },
                 { name: "Shield", tabler: "IconShield", lucide: "Shield", hugeicons: "Shield01Icon", phosphor: "ShieldIcon", remixicon: "RiShieldLine" },
-                { name: "Lock", tabler: "IconLock", lucide: "Lock", hugeicons: "Lock01Icon", phosphor: "LockIcon", remixicon: "RiLockLine" },
+                { name: "Lock", tabler: "IconLock", lucide: "Lock", hugeicons: "LockIcon", phosphor: "LockIcon", remixicon: "RiLockLine" },
               ].map(({ name, tabler, lucide, hugeicons, phosphor, remixicon }) => (
                 <div
                   key={name}

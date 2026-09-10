@@ -20,8 +20,6 @@
     ],
     "paths": {
       "@/*": ["./src/*", "./*"],
-      "@hugeicons/core-free-icons": ["./src/lib/stub-empty"],
-      "@hugeicons/react": ["./src/lib/stub-empty"],
       "@streamdown/code": ["./src/lib/stub-empty"],
       "@tanstack/react-table": ["./src/lib/stub-empty"],
       "@vercel/analytics/react": ["./src/lib/stub-empty"],
