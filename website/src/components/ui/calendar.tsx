@@ -220,6 +220,7 @@ function CalendarDayButton({
 
   return (
     <Button
+      ref={ref}
       variant="ghost"
       size="icon"
       // Pin the locale. With no argument the runtime default is used, and

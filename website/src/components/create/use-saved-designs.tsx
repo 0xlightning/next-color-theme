@@ -126,6 +126,11 @@ export function suggestName(config: DesignSystemConfig): string {
     .join(" · ")
 }
 
+/** A store that never changes cannot need a listener. */
+function subscribeNever() {
+  return () => {}
+}
+
 export function useSavedDesigns() {
   const designs = React.useSyncExternalStore(
     subscribe,
@@ -134,8 +139,11 @@ export function useSavedDesigns() {
   )
   // False during SSR and the hydration render, true once the client store is
   // live — callers use it to avoid flashing an empty state.
+  // `subscribe` registers a window storage listener per call, so passing it
+  // twice installed two per consumer. This store never changes after the
+  // first client render, so it needs no subscription at all.
   const hydrated = React.useSyncExternalStore(
-    subscribe,
+    subscribeNever,
     () => true,
     () => false
   )
