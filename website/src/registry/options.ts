@@ -120,11 +120,17 @@ export const MENU_ACCENTS: MenuAccentOption[] = [
 export const DEFAULT_RADIUS_VALUE = "0.45rem"
 
 export function getFont(value: string): FontOption | undefined {
-  return FONTS.find((f) => f.value === value)
+  // FONT_HEADING_OPTIONS is FONTS plus "inherit"; searching the superset means
+  // getFont("inherit") resolves instead of silently returning undefined.
+  return FONT_HEADING_OPTIONS.find((f) => f.value === value)
 }
 
 export function getLibrary(value: string): LibraryOption | undefined {
   return LIBRARIES.find((l) => l.value === value)
+}
+
+export function getIconLibrary(value: string): IconLibraryOption | undefined {
+  return ICON_LIBRARIES.find((i) => i.value === value)
 }
 
 export function getRadius(name: string): RadiusOption | undefined {

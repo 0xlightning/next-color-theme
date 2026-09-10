@@ -14,6 +14,7 @@ import {
   RADII,
   STYLES,
   THEMES,
+  sanitizeConfig,
 } from "@/registry"
 import {
   type DesignSystemConfig,
@@ -121,7 +122,10 @@ function reducer(state: EditorState, action: Action): EditorState {
     case "set":
       return { ...state, config: { ...state.config, ...action.payload } }
     case "replace":
-      return { ...state, config: action.payload }
+      // `replace` is the untrusted entry point — a hand-pasted preset code
+      // decodes straight into it. Sanitizing here keeps every caller safe
+      // and the reducer pure.
+      return { ...state, config: sanitizeConfig(action.payload, DEFAULT_CONFIG) }
     case "hydrate":
       return { ...action.payload, hydrated: true }
     case "toggleLock":
@@ -185,7 +189,10 @@ function loadFromStorage(): EditorState | null {
       | undefined
 
     return {
-      config: { ...DEFAULT_CONFIG, ...(config ?? {}) },
+      // Stored JSON is arbitrary — a renamed token or a hand-edit would
+      // otherwise reach buildThemeVars() and blank the preview / throw in
+      // buildPayload(). Unknown fields fall back one at a time.
+      config: sanitizeConfig({ ...DEFAULT_CONFIG, ...(config ?? {}) }, DEFAULT_CONFIG),
       locks: (isEnvelope && (record.locks as Locks)) || {},
       components:
         isEnvelope && Array.isArray(record.components)
@@ -245,7 +252,9 @@ export function DesignSystemProvider({
 
     dispatch({
       type: "hydrate",
-      payload: requested ? { ...base, config: requested.config } : base,
+      payload: requested
+        ? { ...base, config: sanitizeConfig(requested.config, DEFAULT_CONFIG) }
+        : base,
     })
   }, [])
 
