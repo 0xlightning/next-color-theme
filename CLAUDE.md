@@ -152,12 +152,14 @@ Rules inside the showcase:
 ### Charts
 
 Four wrappers in `src/components/charts/`:
-- `BarChart.tsx`, `DonutChart.tsx` — thin re-exports of `ui/chart.tsx` types.
+- `BarChart.tsx` — thin `ui/chart.tsx` wrappers; exports both `BarChart` and `AreaChart`.
+- `DonutChart.tsx` — thin `ui/chart.tsx` wrapper.
 - `MiniBarChart.tsx` — sparkline bar row.
 - `ProgressRing.tsx` — SVG ring for numeric percentage.
 
-`AreaChart`, `LineChart`, and `Sparkline` no longer exist as named exports. Use
-`ui/chart.tsx` directly with `type="area"` or `type="line"` if needed.
+`LineChart` and `Sparkline` no longer exist as named exports. Use `ui/chart.tsx`
+directly with `type="line"` if needed. `AreaChart` does still exist — it lives in
+`BarChart.tsx` and `showcase-block.tsx` renders it.
 
 ### UI primitives
 
@@ -188,7 +190,7 @@ disappears. `buildPayload` rewrites font stacks to literal family names for expo
 | Where state dispatch actions are | `src/components/create/use-design-system.tsx` → `reducer()` |
 | The export output format | `src/components/create/build-payload.ts` → `buildPayload()` |
 | localStorage key names | `use-design-system.tsx` (`create-state`) + `use-saved-designs.tsx` (`saved-designs`) |
-| Shadcn component manifest | `src/components/ui/_registry.ts` |
+| Shadcn component manifest | `src/components/create/registry-catalog.ts` → `REGISTRY_RAW` |
 | Knowledge graph queries | `graphify query "<question>"` or open `graphify-out/graph.html` |
 
 For structural questions ("what depends on X?", "where is Y defined?") prefer:

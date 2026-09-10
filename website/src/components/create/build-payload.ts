@@ -278,17 +278,6 @@ ${add}
   return { componentsJson, globalsCss, installCommand }
 }
 
-export function formatClipboardText(payload: Payload): string {
-  return `/* ---- components.json ---- */
-${payload.componentsJson}
-
-/* ---- app/globals.css ---- */
-${payload.globalsCss}
-
-/* ---- install ---- */
-${payload.installCommand}`
-}
-
 /** DOM id of the single <style> element that carries the preview tokens. */
 export const THEME_STYLE_ELEMENT_ID = "create-theme-vars"
 

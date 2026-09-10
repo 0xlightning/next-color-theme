@@ -9,60 +9,7 @@ and `npx shadcn add` command tailored to exactly the components you chose.
 
 ## ✨ Features
 
-### Live dual-mode preview
-The preview renders a full shadcn component showcase **twice on the same screen** — once in
-light mode, once in dark — so you can judge contrast and color fidelity at a glance without
-toggling back and forth.
-
-### 11 customizer controls
-Every visual dimension of the design system is exposed as a locked, shuffleable picker:
-
-| Control | What it changes |
-|---|---|
-| **Style** | The base shadcn style variant (luma, …) |
-| **Base Color** | The neutral color scale — background, card, border, muted, … |
-| **Theme** | Primary / accent color (cyan, blue, green, orange, violet, rose, lime, neutral) |
-| **Chart Color** | The 5-swatch chart palette (independently from the primary theme) |
-| **Heading Font** | Typeface for headings (Geist, Inter, Noto Sans, JetBrains Mono, EB Garamond, or inherit body) |
-| **Body Font** | Typeface for body text |
-| **Icon Library** | Tabler Icons or Lucide |
-| **Library** | Export target: Base UI (`base-luma`) or Radix UI (`new-york`) |
-| **Radius** | Border-radius scale (none → small → medium → large → round) |
-| **Menu Color** | Sidebar menu color: Default or Inverted, Solid or Translucent |
-| **Menu Accent** | Sidebar active-item accent strength: Subtle or Bold |
-
-### Lock and Shuffle
-Lock any subset of controls. Hit **Shuffle** and only the unlocked fields randomize —
-so you can pin your brand color and explore typeface + radius combinations at random.
-
-### Presets
-Every configuration is encoded as a short **preset code** (e.g. `b2D0wqNxT`) via the
-shadcn preset codec. Copy it from the sidebar, share it with a teammate, or paste it back
-with **Open Preset**. Presets encode 10 of the 13 fields (mode and accent are UI-only;
-library only affects export).
-
-### Save Designs
-Click **Save Design** to snapshot the current configuration to the browser's localStorage.
-Saved designs are listed in the `/creates` gallery where you can rename, delete, or click
-any card to re-open it in the customizer for further editing.
-
-### Get Code — paste-ready export
-Click **Get Code** to open the export dialog with three ready-to-copy tabs:
-
-1. **`globals.css`** — a complete Tailwind v4 CSS file with all design tokens (oklch
-   CSS variables, `@theme inline` block, `@layer base` resets). Font stacks are written
-   as literal family names so they work in any project without this app's `next/font` setup.
-2. **`components.json`** — a fully configured shadcn `components.json` targeting your chosen
-   library, base color, icon library, and style.
-3. **Install** — the exact `npx shadcn@latest init` + `npx shadcn@latest add` commands for
-   the components you ticked in the Components tab.
-
-What you see is exactly what you copy — the export and the preview use the same
-`buildThemeVars()` function, so there are no surprises.
-
-### Component picker
-The Get Code dialog lets you select which shadcn components you want installed. The list
-is pulled from the shadcn manifest so it stays up to date with upstream releases.
+Customizer controls, presets, save/export flow → see [CUSTOMIZATION.md](CUSTOMIZATION.md).
 
 ---
 

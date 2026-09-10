@@ -7,9 +7,9 @@ export type CatalogEntry = {
 }
 
 /**
- * The 28 primitives this project actually vendors, plus `popover`. Used as
- * the default selection in the Get Code component picker so the export
- * matches what the preview renders before the user touches anything.
+ * The 26 primitives this project actually vendors. Used as the default
+ * selection in the Get Code component picker so the export matches what the
+ * preview renders before the user touches anything.
  */
 export const PRESENT_COMPONENTS: readonly string[] = [
   "accordion",
@@ -22,10 +22,8 @@ export const PRESENT_COMPONENTS: readonly string[] = [
   "checkbox",
   "dialog",
   "dropdown-menu",
-  "empty",
   "field",
   "input",
-  "input-group",
   "label",
   "popover",
   "progress",
@@ -34,7 +32,7 @@ export const PRESENT_COMPONENTS: readonly string[] = [
   "separator",
   "skeleton",
   "slider",
-  "spinner",
+  "sonner",
   "switch",
   "table",
   "tabs",

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import type { DesignSystemConfig } from "@/registry/types"
-import { buildThemeVars, formatVarBlock } from "./build-payload"
+import { buildThemeVars } from "./build-payload"
 import { IconLibraryProvider } from "./icon-library-context"
 
 type ScopeProps = {
@@ -41,5 +41,3 @@ export function StaticThemeScope({
     </div>
   )
 }
-
-export { formatVarBlock }
