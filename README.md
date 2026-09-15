@@ -1,4 +1,4 @@
-# KSPRAVEEN20 Profile Website
+# Next Color Theme
 
 Next Color Theme is a live theme customizer for shadcn dashboards. It allows picking visual dimensions of a shadcn design system in a sidebar and seeing a full component showcase re-skin in real time (light and dark simultaneously). Users can then export a `globals.css` and `npx shadcn add` command tailored to their selected components.
 
